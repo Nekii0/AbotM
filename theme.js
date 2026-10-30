@@ -24,19 +24,6 @@ addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Hotline ticker: a hidden second copy makes the loop seamless; reduced-motion users get the plain wrapped list.
-  const track = document.querySelector(".sos-track");
-  if (track && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const copy = track.firstElementChild.cloneNode(true);
-    copy.setAttribute("aria-hidden", "true");
-    copy.querySelectorAll("a").forEach(a => a.tabIndex = -1);
-    track.append(copy);
-    track.classList.add("loop");
-    // No pause button: hover/keyboard focus pause it, and tapping the strip (not a number) toggles it on phones.
-    const sos = track.parentNode;
-    sos.addEventListener("click", e => { if (!e.target.closest("a")) sos.classList.toggle("paused"); });
-  }
-
   const btn = document.getElementById("theme-toggle");
   if (!btn) return;
   const sync = () => {

@@ -36,13 +36,11 @@ a { color:var(--moss); }
 a:focus-visible, input:focus-visible, button:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
 
 /* emergency strip on every page */
-.sos { position:relative; overflow:hidden; background:var(--sun); color:var(--sun-ink); padding:8px 16px; font-size:.95rem; }
-/* hotline ticker: theme.js adds a second copy and .loop so it scrolls seamlessly; without that the list just wraps */
-.sos-items { margin:0; display:flex; flex-wrap:wrap; justify-content:center; gap:4px 40px; }
-.sos-track.loop { display:flex; width:max-content; animation:ticker 45s linear infinite; }
-.sos-track.loop .sos-items { flex-wrap:nowrap; white-space:nowrap; padding-right:40px; }
-.sos:hover .sos-track, .sos:focus-within .sos-track, .sos.paused .sos-track { animation-play-state:paused; }
-@keyframes ticker { to { transform:translateX(-50%); } }
+.sos { background:var(--sun); color:var(--sun-ink); text-align:center; padding:8px 16px; font-size:.95rem; }
+.sos .sep { margin:0 6px; opacity:.6; }
+.sos .all { font-weight:600; white-space:nowrap; }
+/* a little room above the hotlines panel when the "All hotlines" link jumps to it */
+#hotlines { scroll-margin-top:16px; }
 .sos a { color:inherit; font-weight:700; }
 
 .wrap { max-width:880px; margin:20px auto 0; padding:0 16px; }
