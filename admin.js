@@ -110,7 +110,16 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     adminLink.textContent = u ? `Sign out (${u.email})` : "Admin sign in";
     render();
   });
-  adminLink.onclick = () => user ? signOut(auth) : signInWithPopup(auth, new GoogleAuthProvider()).catch(() => {});
+  const signInError = {
+    "auth/unauthorized-domain": `Sign-in isn't allowed on ${location.hostname} yet. In Firebase → Authentication → Settings → Authorized domains, add ${location.hostname}.`,
+    "auth/popup-blocked": "Your browser blocked the sign-in window. Allow pop-ups for this site and try again.",
+    "auth/operation-not-allowed": "Google sign-in is turned off. In Firebase → Authentication → Sign-in method, enable Google.",
+  };
+  adminLink.onclick = () => user ? signOut(auth) : signInWithPopup(auth, new GoogleAuthProvider()).catch(e => {
+    // Closing the window yourself isn't an error worth showing.
+    if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request")
+      alert(signInError[e.code] || `Sign-in failed (${e.code}). Try again.`);
+  });
 
   addBtn.onclick = () => open(null);
   document.getElementById("res-cancel").onclick = () => dialog.close();
