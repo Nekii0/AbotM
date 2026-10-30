@@ -27,6 +27,11 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Lets the website check whether the signed-in account is an admin. Nothing is stored here.
+    match /admin-check/{id} {
+      allow read: if isAdmin();
+    }
+
     // Admin edits to built-in page text (one document per edited line).
     match /content/{id} {
       allow read: if true;

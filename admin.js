@@ -29,7 +29,7 @@ const toLink = v => /^[+(]?[0-9][0-9 ().-]{5,}$/.test(v) ? "tel:" + v.replace(/[
 if (firebaseConfig.apiKey && boxes.length) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
-  const { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
+  const { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, getDoc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -216,7 +216,17 @@ if (firebaseConfig.apiKey && boxes.length) {
     });
   }
 
-  onAuthStateChanged(auth, u => {
+  onAuthStateChanged(auth, async u => {
+    // Any Google account can sign in; the Firebase rules decide who is an admin. Reading admin-check is
+    // only allowed for admins, so a refusal means this account can't edit: sign it out instead of showing
+    // edit buttons that would fail. (Other errors, like being offline, fall through; the rules still block saving.)
+    if (u) {
+      const ok = await getDoc(doc(db, "admin-check", "me")).then(() => true, e => e.code !== "permission-denied");
+      if (!ok) {
+        alert(`${u.email} isn't an admin of this site, so you've been signed out. Ask the site owner to add your email.`);
+        return signOut(auth);
+      }
+    }
     user = u;
     adminLink.textContent = u ? `Sign out (${u.email})` : "Admin sign in";
     editBtn.hidden = !u;
