@@ -187,3 +187,12 @@ dialog[open]::backdrop { animation:fade .22s ease-out; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation:none !important; transition:none !important; }
 }
+
+/* admin text editing */
+.edit-mode [data-key] { outline:1px dashed var(--moss); outline-offset:3px; border-radius:4px; cursor:text; }
+.edit-mode [data-key]:focus { outline:2px solid var(--sun); background:var(--tint); }
+.edit-mode .card { cursor:text; }
+.edit-bar { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:10; width:min(640px, calc(100% - 32px));
+  background:var(--sun); color:var(--sun-ink); padding:10px 16px; border-radius:12px; font-size:.95rem; box-shadow:0 8px 24px rgba(0,0,0,.25); animation:settle .3s ease-out; }
+@keyframes saved { from { background:rgba(233,185,73,.45); } }
+[data-key].saved { animation:saved 1.2s ease-out; }

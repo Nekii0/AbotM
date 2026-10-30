@@ -3,7 +3,7 @@ import { firebaseConfig } from "./firebase-config.js?v=7";
 // Any <section data-page="..."> becomes a list admins can add to: contacts on service pages,
 // announcements and events on the homepage. All are stored in the "resources" collection by page.
 const CDN = "https://www.gstatic.com/firebasejs/10.12.2/";
-const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs", "announcements", "events"];
+const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs", "announcements", "events", "needs"];
 const CONTACTS = { heading: "Contacts and links", noun: "contact or link", empty: "No contacts yet. Add the first one.",
   name: "e.g. Baguio General Hospital psychiatry", desc: "Short description", descHint: "What it offers, who it's for, hours" };
 const TEXT = {
@@ -11,6 +11,9 @@ const TEXT = {
     name: "e.g. Relief drive this Saturday", desc: "Details", descHint: "What's happening and what people should do" },
   events: { heading: "Upcoming events", noun: "event", empty: "No upcoming events yet.",
     name: "e.g. Burnham Park clean-up", desc: "When and where", descHint: "e.g. Sat, Nov 8 · 7 AM · Burnham Park" },
+  // Shown to visitors even when empty, since it's the main content of the Community Needs page.
+  needs: { heading: "Current needs", noun: "need", empty: "No urgent needs right now. Check back soon.", alwaysShow: true,
+    name: "e.g. Relief goods for flood-hit families", desc: "Details", descHint: "Who needs it, how much, where to bring it" },
 };
 const boxes = [...document.querySelectorAll("section[data-page]")].filter(b => PAGES.includes(b.dataset.page));
 
@@ -23,11 +26,12 @@ const toLink = v => /^[+(]?[0-9][0-9 ().-]{5,}$/.test(v) ? "tel:" + v.replace(/[
 if (firebaseConfig.apiKey && boxes.length) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
-  const { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
+  const { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const resources = collection(getFirestore(app), "resources");
+  const db = getFirestore(app);
+  const resources = collection(db, "resources");
   let docs = [], user = null, editing = null;
 
   document.body.insertAdjacentHTML("beforeend", `<dialog id="res-dialog" aria-labelledby="res-title">
@@ -125,7 +129,7 @@ if (firebaseConfig.apiKey && boxes.length) {
         .sort((a, b) => (a.data().createdAt?.seconds ?? Infinity) - (b.data().createdAt?.seconds ?? Infinity));
       if (TEXT[page]?.newestFirst) mine.reverse();
       box.querySelector(".resources").replaceChildren(...mine.map(d => item(page, d.id, d.data())));
-      box.hidden = !mine.length && !user;
+      box.hidden = !mine.length && !user && !TEXT[page]?.alwaysShow;
       box.querySelector(".res-empty").hidden = !!mine.length;
       box.querySelector(".add-btn").hidden = !user;
     }
@@ -136,9 +140,85 @@ if (firebaseConfig.apiKey && boxes.length) {
     render();
   }, () => console.warn("Could not load lists"));
 
+  // Page text editing: admins click "Edit page text", then click any plain heading/paragraph/list item to change it.
+  // Overrides live in the "content" collection, keyed by page + a hash of the original text, and apply for every visitor.
+  // Text that contains links (hotlines, sources) is left out so a typo can't break a link.
+  const pageKey = location.pathname.split("/").pop().replace(/\.html$/, "") || "index";
+  const hash = s => { let h = 5381; for (const ch of s) h = (Math.imul(h, 33) ^ ch.codePointAt(0)) >>> 0; return h.toString(36); };
+  const editable = [...document.querySelectorAll("header h1, header > p, main h2, main h3, main p, main li")]
+    .filter(el => !el.closest("section[data-page]") && !el.children.length && el.textContent.trim());
+  for (const el of editable) {
+    el.dataset.original = el.textContent.trim();
+    el.dataset.key = pageKey + "-" + hash(el.dataset.original);
+  }
+  const content = collection(db, "content");
+  let overrides = new Map(), editMode = false;
+  const applyText = () => {
+    for (const el of editable) if (el !== document.activeElement) el.textContent = overrides.get(el.dataset.key) ?? el.dataset.original;
+  };
+  onSnapshot(query(content, where("page", "==", pageKey)), snap => {
+    overrides = new Map(snap.docs.map(d => [d.id, d.data().text]));
+    applyText();
+  }, () => console.warn("Could not load page text"));
+
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "link-btn";
+  editBtn.hidden = true;
+  document.querySelector("footer").append(" ", editBtn);
+  const editBar = document.createElement("div");
+  editBar.className = "edit-bar";
+  editBar.hidden = true;
+  editBar.textContent = "Editing page text: click any dashed text to change it. Enter saves, Esc cancels. Clear it to restore the original.";
+  document.body.append(editBar);
+
+  const setEditMode = on => {
+    editMode = on;
+    document.body.classList.toggle("edit-mode", on);
+    editBar.hidden = !on;
+    editBtn.textContent = on ? "Done editing" : "Edit page text";
+    for (const el of editable) {
+      // "plaintext-only" keeps pasted formatting out; older browsers reject it, so fall back to "true" (we save plain text anyway).
+      if (on) { try { el.contentEditable = "plaintext-only"; } catch { el.contentEditable = "true"; } }
+      else el.removeAttribute("contenteditable");
+    }
+  };
+  editBtn.onclick = () => setEditMode(!editMode);
+  // While editing, clicking text inside a card must not open the card's page.
+  document.addEventListener("click", e => { if (editMode && e.target.closest("[data-key]")) e.preventDefault(); }, true);
+
+  for (const el of editable) {
+    el.addEventListener("keydown", e => {
+      if (!editMode) return;
+      if (e.key === "Enter") { e.preventDefault(); el.blur(); }
+      if (e.key === "Escape") { el.textContent = overrides.get(el.dataset.key) ?? el.dataset.original; el.blur(); }
+    });
+    el.addEventListener("blur", async () => {
+      if (!editMode) return;
+      const text = el.textContent.replace(/\s+/g, " ").trim().slice(0, 1000);
+      const current = overrides.get(el.dataset.key) ?? el.dataset.original;
+      if (text === current) return;
+      const ref = doc(content, el.dataset.key);
+      try {
+        // Empty or back to the original: remove the override so the built-in text shows again.
+        if (!text || text === el.dataset.original) await deleteDoc(ref);
+        else await setDoc(ref, { text, page: pageKey, updatedAt: serverTimestamp() });
+        el.classList.remove("saved");
+        void el.offsetWidth;
+        el.classList.add("saved");
+      } catch (err) {
+        el.textContent = current;
+        alert(explain(err));
+      }
+    });
+  }
+
   onAuthStateChanged(auth, u => {
     user = u;
     adminLink.textContent = u ? `Sign out (${u.email})` : "Admin sign in";
+    editBtn.hidden = !u;
+    if (!u && editMode) setEditMode(false);
+    if (u && !editMode) editBtn.textContent = "Edit page text";
     render();
   });
   const signInError = {
