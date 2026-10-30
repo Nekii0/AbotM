@@ -89,3 +89,37 @@ dialog input:focus-visible, dialog textarea:focus-visible { outline:3px solid va
 .dialog-actions .btn { margin:0; border:0; font:inherit; font-weight:600; cursor:pointer; }
 .btn.ghost { background:var(--mist); color:var(--ink); }
 .btn:disabled { opacity:.6; cursor:wait; }
+
+/* motion: one load sequence (ridge rises, header settles, cards follow), plus feedback on what people do */
+@keyframes rise { from { transform:translateY(100%); } }
+@keyframes settle { from { opacity:0; transform:translateY(10px); } }
+@keyframes pop { from { opacity:0; transform:translateY(12px) scale(.97); } }
+@keyframes fade { from { opacity:0; } }
+
+header::after { animation:rise .8s cubic-bezier(.2,.8,.2,1) both; }
+header h1, header > p, header input { animation:settle .5s ease-out both; }
+header h1 { animation-delay:.15s; }
+header > p { animation-delay:.25s; }
+header input { animation-delay:.35s; }
+
+/* also replays when search shows a card again, since display:none → visible restarts animations */
+.card { animation:settle .35s ease-out both; transition:transform .15s ease, border-color .15s, background .15s, box-shadow .15s; }
+.grid .card:nth-child(2) { animation-delay:.05s; } .grid .card:nth-child(3) { animation-delay:.1s; }
+.grid .card:nth-child(4) { animation-delay:.15s; } .grid .card:nth-child(5) { animation-delay:.2s; }
+.grid .card:nth-child(6) { animation-delay:.25s; }
+.card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(31,58,46,.12); }
+.card:hover svg { transform:scale(1.08); }
+.card svg { transition:transform .2s ease; }
+.card:active { transform:translateY(0) scale(.99); }
+
+.btn, .link-btn { transition:background .15s, transform .1s; }
+.btn:active { transform:scale(.97); }
+
+.resources li { animation:settle .3s ease-out both; }
+dialog[open] { animation:pop .22s ease-out; }
+dialog[open]::backdrop { animation:fade .22s ease-out; }
+.empty, .form-error:not(:empty) { animation:fade .25s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation:none !important; transition:none !important; }
+}
