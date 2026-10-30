@@ -35,7 +35,7 @@ To add another admin, add their email to the list in Firestore **Rules** and pub
 The site is published with GitHub Pages from the `main` branch (**Settings → Pages**).
 Every push to `main` updates the live site in about a minute.
 
-When you change `style.css` or `script.js`, raise the number in `style.css?v=7` / `script.js?v=7` in every `.html` file (for example to `v=8`), so visitors' browsers load the new version instead of an old cached copy.
+When you change `style.css` or `script.js`, raise the number in `style.css?v=8` / `script.js?v=7` in every `.html` file (for example to `v=8`), so visitors' browsers load the new version instead of an old cached copy.
 
 ### Update on github.com
 
