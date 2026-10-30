@@ -13,9 +13,9 @@ Abot-Mamamayan community hub: find help, give help, build a stronger community.
 
 ## Adding services (admins)
 
-Admins can sign in and add, edit or remove services on the homepage. Added services are saved in Firebase (free) and shown to every visitor.
+Admins can sign in at the bottom of any service page (Volunteer, Mental Wellness, etc.) and add, edit or remove that page's **Trusted resources**. They are saved in Firebase (free) and shown to every visitor.
 
-Files: `admin.js` (sign-in and saving), `firebase-config.js` (your project's keys), `firestore.rules` (who can save).
+Files: `admin.js` (sign-in and saving), `firebase-config.js` (your project's keys), `firestore.rules` (who can save; paste into Firebase → Firestore → Rules).
 
 One-time setup:
 
@@ -35,7 +35,7 @@ To add another admin, add their email to the list in Firestore **Rules** and pub
 The site is published with GitHub Pages from the `main` branch (**Settings → Pages**).
 Every push to `main` updates the live site in about a minute.
 
-When you change `style.css` or `script.js`, raise the number in `style.css?v=5` / `script.js?v=5` in every `.html` file (for example to `v=6`), so visitors' browsers load the new version instead of an old cached copy.
+When you change `style.css` or `script.js`, raise the number in `style.css?v=7` / `script.js?v=7` in every `.html` file (for example to `v=8`), so visitors' browsers load the new version instead of an old cached copy.
 
 ### Update on github.com
 

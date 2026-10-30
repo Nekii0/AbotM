@@ -1,91 +1,119 @@
-import { firebaseConfig } from "./firebase-config.js?v=6";
+import { firebaseConfig } from "./firebase-config.js?v=7";
 
+// Each service page has <section id="resources" data-page="..."> where admins add resources.
 const CDN = "https://www.gstatic.com/firebasejs/10.12.2/";
-const grid = document.getElementById("grid");
-const addBtn = document.getElementById("add-service");
-const adminLink = document.getElementById("admin-link");
-const dialog = document.getElementById("service-dialog");
-const form = document.getElementById("service-form");
-const formError = document.getElementById("form-error");
-const saveBtn = document.getElementById("save-service");
+const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs"];
+const box = document.getElementById("resources");
+const page = box?.dataset.page;
 
 // Only web links and phone numbers; blocks javascript: and other unsafe links.
 const safeLink = v => /^(https?:\/\/\S+|tel:\+?[0-9 -]+)$/i.test(v) ? v : "";
 
-function card(id, s, canEdit, onEdit, onRemove) {
-  const el = document.createElement("div");
-  el.className = "card added";
-  el.innerHTML = '<svg viewBox="0 0 24 24" stroke="#3f6b52" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg><h3></h3><p></p>';
-  const h3 = el.querySelector("h3"), link = safeLink(s.link || "");
-  if (link) {
-    const a = document.createElement("a");
-    a.href = link;
-    a.textContent = s.title;
-    if (link.startsWith("http")) { a.target = "_blank"; a.rel = "noopener"; }
-    h3.append(a);
-  } else h3.textContent = s.title;
-  el.querySelector("p").textContent = s.description;
-  if (canEdit) {
-    const tools = document.createElement("div");
-    tools.className = "card-tools";
-    const btn = (label, fn) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "link-btn";
-      b.textContent = label;
-      b.setAttribute("aria-label", `${label} ${s.title}`);
-      b.onclick = fn;
-      tools.append(b);
-    };
-    btn("Edit", () => onEdit(id, s));
-    btn("Remove", () => confirm(`Remove "${s.title}" for everyone?`) && onRemove(id));
-    el.append(tools);
-  }
-  return el;
-}
-
-if (firebaseConfig.apiKey) {
+if (firebaseConfig.apiKey && PAGES.includes(page)) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
-  const { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } = await import(CDN + "firebase-firestore.js");
+  const { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const services = collection(getFirestore(app), "services");
-  let docs = [], user = null, editingId = null;
-  const dialogTitle = document.getElementById("dialog-title");
+  const resources = collection(getFirestore(app), "resources");
+  let items = [], user = null, editingId = null;
+
+  box.innerHTML = `<h2>Trusted resources</h2>
+    <ul class="resources" id="res-list"></ul>
+    <p class="res-empty" id="res-empty" hidden>No resources yet. Add the first one.</p>
+    <button type="button" class="btn add-btn" id="add-res" hidden>+ Add resource</button>`;
+  document.body.insertAdjacentHTML("beforeend", `<dialog id="res-dialog" aria-labelledby="res-title">
+    <form id="res-form">
+      <h2 id="res-title">Add a resource</h2>
+      <label>Name <input name="title" required maxlength="60" placeholder="e.g. Baguio General Hospital psychiatry"></label>
+      <label>Short description <textarea name="description" required maxlength="140" rows="3" placeholder="What it offers, who it's for, hours"></textarea></label>
+      <label>Link or phone (optional) <input name="link" maxlength="300" placeholder="https://… or tel:+6374…"></label>
+      <p class="form-error" id="res-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="res-cancel">Cancel</button>
+        <button type="submit" class="btn" id="res-save">Save resource</button>
+      </div>
+    </form>
+  </dialog>`);
+  const list = document.getElementById("res-list");
+  const empty = document.getElementById("res-empty");
+  const addBtn = document.getElementById("add-res");
+  const dialog = document.getElementById("res-dialog");
+  const form = document.getElementById("res-form");
+  const formError = document.getElementById("res-error");
+  const saveBtn = document.getElementById("res-save");
+  const adminLink = document.createElement("button");
+  adminLink.type = "button";
+  adminLink.className = "link-btn";
+  document.querySelector("footer").append(" ", adminLink);
+
+  const explain = e => e.code === "permission-denied"
+    ? "This account isn't an admin. Ask the site owner to add your email to the Firebase rules."
+    : "Couldn't save. Check your connection and try again.";
 
   const open = (id, s) => {
     editingId = id;
     form.reset();
     formError.textContent = "";
-    dialogTitle.textContent = id ? "Edit service" : "Add a service";
+    document.getElementById("res-title").textContent = id ? "Edit resource" : "Add a resource";
     if (s) for (const k of ["title", "description", "link"]) form.elements[k].value = s[k] || "";
     dialog.showModal();
   };
-  const remove = id => deleteDoc(doc(services, id)).catch(e => alert(explain(e)));
-  const render = () => {
-    grid.querySelectorAll(".card.added").forEach(c => c.remove());
-    for (const d of docs) grid.append(card(d.id, d.data(), !!user, open, remove));
+
+  const item = (id, s) => {
+    const li = document.createElement("li");
+    const h3 = document.createElement("h3"), link = safeLink(s.link || "");
+    if (link) {
+      const a = document.createElement("a");
+      a.href = link;
+      a.textContent = s.title;
+      if (link.startsWith("http")) { a.target = "_blank"; a.rel = "noopener"; }
+      h3.append(a);
+    } else h3.textContent = s.title;
+    const p = document.createElement("p");
+    p.textContent = s.description;
+    li.append(h3, p);
+    if (user) {
+      const tools = document.createElement("div");
+      tools.className = "res-tools";
+      for (const [label, fn] of [["Edit", () => open(id, s)],
+        ["Remove", () => confirm(`Remove "${s.title}" for everyone?`) && deleteDoc(doc(resources, id)).catch(e => alert(explain(e)))]]) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "link-btn";
+        b.textContent = label;
+        b.setAttribute("aria-label", `${label} ${s.title}`);
+        b.onclick = fn;
+        tools.append(b);
+      }
+      li.append(tools);
+    }
+    return li;
   };
-  const explain = e => e.code === "permission-denied"
-    ? "This account isn't an admin. Ask the site owner to add your email to the Firebase rules."
-    : "Couldn't save. Check your connection and try again.";
 
-  onSnapshot(query(services, orderBy("createdAt")), snap => { docs = snap.docs; render(); },
-    () => console.warn("Could not load added services"));
+  const render = () => {
+    list.replaceChildren(...items.map(d => item(d.id, d.data())));
+    box.hidden = !items.length && !user;
+    empty.hidden = !!items.length;
+    addBtn.hidden = !user;
+  };
 
-  adminLink.hidden = false;
+  // Sorted here instead of in the query, so Firestore needs no extra index.
+  onSnapshot(query(resources, where("page", "==", page)), snap => {
+    items = snap.docs.sort((a, b) => (a.data().createdAt?.seconds ?? Infinity) - (b.data().createdAt?.seconds ?? Infinity));
+    render();
+  }, () => console.warn("Could not load resources"));
+
   onAuthStateChanged(auth, u => {
     user = u;
-    addBtn.hidden = !u;
     adminLink.textContent = u ? `Sign out (${u.email})` : "Admin sign in";
     render();
   });
   adminLink.onclick = () => user ? signOut(auth) : signInWithPopup(auth, new GoogleAuthProvider()).catch(() => {});
 
   addBtn.onclick = () => open(null);
-  document.getElementById("cancel-service").onclick = () => dialog.close();
+  document.getElementById("res-cancel").onclick = () => dialog.close();
   form.onsubmit = async e => {
     e.preventDefault();
     const f = new FormData(form);
@@ -95,14 +123,14 @@ if (firebaseConfig.apiKey) {
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
     try {
-      if (editingId) await updateDoc(doc(services, editingId), s);
-      else await addDoc(services, { ...s, createdAt: serverTimestamp() });
+      if (editingId) await updateDoc(doc(resources, editingId), s);
+      else await addDoc(resources, { ...s, page, createdAt: serverTimestamp() });
       dialog.close();
     } catch (err) {
       formError.textContent = explain(err);
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = "Save service";
+      saveBtn.textContent = "Save resource";
     }
   };
 }

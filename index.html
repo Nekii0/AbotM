@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Source+Sans+3:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=5">
-<script src="script.js?v=5" defer></script>
+<link rel="stylesheet" href="style.css?v=7">
+<script src="script.js?v=7" defer></script>
 </head>
 <body>
 <div class="sos">Emergency in Baguio? Dial <a href="tel:911">911</a> (24/7)</div>
@@ -48,28 +48,12 @@
       </a>
     </div>
     <p class="empty" id="empty">No services match your search.</p>
-    <button type="button" class="btn add-btn" id="add-service" hidden>+ Add service</button>
     <section class="closing">
       <h2>No one should have to look too far for help.</h2>
       <p>Together, we can turn compassion into action.</p>
     </section>
   </main>
 </div>
-<dialog id="service-dialog" aria-labelledby="dialog-title">
-  <form id="service-form" method="dialog">
-    <h2 id="dialog-title">Add a service</h2>
-    <label>Name <input name="title" required maxlength="60" placeholder="e.g. Free legal aid"></label>
-    <label>Short description <textarea name="description" required maxlength="140" rows="3" placeholder="What it offers and who it's for"></textarea></label>
-    <label>Link or phone (optional) <input name="link" maxlength="300" placeholder="https://… or tel:+6374…"></label>
-    <p class="form-error" id="form-error" role="alert"></p>
-    <div class="dialog-actions">
-      <button type="button" class="btn ghost" id="cancel-service">Cancel</button>
-      <button type="submit" class="btn" id="save-service">Save service</button>
-    </div>
-  </form>
-</dialog>
-<footer>Abot-Mamamayan, a community hub for Baguio City. Hotlines last checked October 2026; call to confirm before you need them.
-  <button type="button" class="link-btn" id="admin-link" hidden>Admin sign in</button></footer>
-<script type="module" src="admin.js?v=6"></script>
+<footer>Abot-Mamamayan, a community hub for Baguio City. Hotlines last checked October 2026; call to confirm before you need them.</footer>
 </body>
 </html>
