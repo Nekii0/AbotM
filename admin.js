@@ -8,6 +8,9 @@ const page = box?.dataset.page;
 
 // Only web links and phone numbers; blocks javascript: and other unsafe links.
 const safeLink = v => /^(https?:\/\/\S+|tel:\+?[0-9 -]+)$/i.test(v) ? v : "";
+// Turns what people type ("0917 123 4567", "(074) 661-1455", "redcross.org.ph") into a tel: or https:// link.
+const toLink = v => /^[+(]?[0-9][0-9 ().-]{5,}$/.test(v) ? "tel:" + v.replace(/[^0-9+]/g, "")
+  : /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(v) ? "https://" + v : v;
 
 if (firebaseConfig.apiKey && PAGES.includes(page)) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
@@ -28,7 +31,7 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
       <h2 id="res-title">Add a resource</h2>
       <label>Name <input name="title" required maxlength="60" placeholder="e.g. Baguio General Hospital psychiatry"></label>
       <label>Short description <textarea name="description" required maxlength="140" rows="3" placeholder="What it offers, who it's for, hours"></textarea></label>
-      <label>Link or phone (optional) <input name="link" maxlength="300" placeholder="https://… or tel:+6374…"></label>
+      <label>Link or phone (optional) <input name="link" maxlength="300" placeholder="0917 123 4567 or redcross.org.ph"></label>
       <p class="form-error" id="res-error" role="alert"></p>
       <div class="dialog-actions">
         <button type="button" class="btn ghost" id="res-cancel">Cancel</button>
@@ -130,9 +133,9 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
   form.onsubmit = async e => {
     e.preventDefault();
     const f = new FormData(form);
-    const s = { title: f.get("title").trim(), description: f.get("description").trim(), link: f.get("link").trim() };
+    const s = { title: f.get("title").trim(), description: f.get("description").trim(), link: toLink(f.get("link").trim()) };
     if (!s.title || !s.description) { formError.textContent = "Add a name and a short description."; return; }
-    if (s.link && !safeLink(s.link)) { formError.textContent = "Link must start with https:// or tel:"; return; }
+    if (s.link && !safeLink(s.link)) { formError.textContent = "Enter a phone number (like 0917 123 4567) or a website (like redcross.org.ph)."; return; }
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
     try {
