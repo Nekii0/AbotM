@@ -12,7 +12,7 @@ const saveBtn = document.getElementById("save-service");
 // Only web links and phone numbers; blocks javascript: and other unsafe links.
 const safeLink = v => /^(https?:\/\/\S+|tel:\+?[0-9 -]+)$/i.test(v) ? v : "";
 
-function card(id, s, canRemove, onRemove) {
+function card(id, s, canEdit, onEdit, onRemove) {
   const el = document.createElement("div");
   el.className = "card added";
   el.innerHTML = '<svg viewBox="0 0 24 24" stroke="#3f6b52" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg><h3></h3><p></p>';
@@ -25,14 +25,21 @@ function card(id, s, canRemove, onRemove) {
     h3.append(a);
   } else h3.textContent = s.title;
   el.querySelector("p").textContent = s.description;
-  if (canRemove) {
-    const rm = document.createElement("button");
-    rm.type = "button";
-    rm.className = "link-btn remove";
-    rm.textContent = "Remove";
-    rm.setAttribute("aria-label", `Remove ${s.title}`);
-    rm.onclick = () => confirm(`Remove "${s.title}" for everyone?`) && onRemove(id);
-    el.append(rm);
+  if (canEdit) {
+    const tools = document.createElement("div");
+    tools.className = "card-tools";
+    const btn = (label, fn) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "link-btn";
+      b.textContent = label;
+      b.setAttribute("aria-label", `${label} ${s.title}`);
+      b.onclick = fn;
+      tools.append(b);
+    };
+    btn("Edit", () => onEdit(id, s));
+    btn("Remove", () => confirm(`Remove "${s.title}" for everyone?`) && onRemove(id));
+    el.append(tools);
   }
   return el;
 }
@@ -40,17 +47,26 @@ function card(id, s, canRemove, onRemove) {
 if (firebaseConfig.apiKey) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
-  const { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } = await import(CDN + "firebase-firestore.js");
+  const { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } = await import(CDN + "firebase-firestore.js");
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const services = collection(getFirestore(app), "services");
-  let docs = [], user = null;
+  let docs = [], user = null, editingId = null;
+  const dialogTitle = document.getElementById("dialog-title");
 
+  const open = (id, s) => {
+    editingId = id;
+    form.reset();
+    formError.textContent = "";
+    dialogTitle.textContent = id ? "Edit service" : "Add a service";
+    if (s) for (const k of ["title", "description", "link"]) form.elements[k].value = s[k] || "";
+    dialog.showModal();
+  };
   const remove = id => deleteDoc(doc(services, id)).catch(e => alert(explain(e)));
   const render = () => {
     grid.querySelectorAll(".card.added").forEach(c => c.remove());
-    for (const d of docs) grid.append(card(d.id, d.data(), !!user, remove));
+    for (const d of docs) grid.append(card(d.id, d.data(), !!user, open, remove));
   };
   const explain = e => e.code === "permission-denied"
     ? "This account isn't an admin. Ask the site owner to add your email to the Firebase rules."
@@ -68,7 +84,7 @@ if (firebaseConfig.apiKey) {
   });
   adminLink.onclick = () => user ? signOut(auth) : signInWithPopup(auth, new GoogleAuthProvider()).catch(() => {});
 
-  addBtn.onclick = () => { form.reset(); formError.textContent = ""; dialog.showModal(); };
+  addBtn.onclick = () => open(null);
   document.getElementById("cancel-service").onclick = () => dialog.close();
   form.onsubmit = async e => {
     e.preventDefault();
@@ -79,7 +95,8 @@ if (firebaseConfig.apiKey) {
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
     try {
-      await addDoc(services, { ...s, createdAt: serverTimestamp() });
+      if (editingId) await updateDoc(doc(services, editingId), s);
+      else await addDoc(services, { ...s, createdAt: serverTimestamp() });
       dialog.close();
     } catch (err) {
       formError.textContent = explain(err);

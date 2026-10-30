@@ -2,22 +2,28 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
-      // Replace with the Google account emails allowed to add and remove services.
+      // Replace with the Google account emails allowed to add, edit and remove services.
       return request.auth != null
         && request.auth.token.email_verified == true
         && request.auth.token.email in ['YOUR_ADMIN_EMAIL@gmail.com'];
     }
 
-    match /services/{id} {
-      allow read: if true;
-      allow create: if isAdmin()
-        && request.resource.data.keys().hasOnly(['title', 'description', 'link', 'createdAt'])
+    function validService() {
+      return request.resource.data.keys().hasOnly(['title', 'description', 'link', 'createdAt'])
         && request.resource.data.title is string
         && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 60
         && request.resource.data.description is string
         && request.resource.data.description.size() > 0 && request.resource.data.description.size() <= 140
-        && request.resource.data.link is string && request.resource.data.link.size() <= 300
+        && request.resource.data.link is string && request.resource.data.link.size() <= 300;
+    }
+
+    match /services/{id} {
+      allow read: if true;
+      allow create: if isAdmin()
+        && validService()
         && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && validService()
+        && request.resource.data.createdAt == resource.data.createdAt;
       allow delete: if isAdmin();
     }
   }
