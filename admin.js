@@ -3,7 +3,7 @@ import { firebaseConfig } from "./firebase-config.js?v=7";
 // Any <section data-page="..."> becomes a list admins can add to: contacts on service pages,
 // announcements and events on the homepage. All are stored in the "resources" collection by page.
 const CDN = "https://www.gstatic.com/firebasejs/10.12.2/";
-const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs", "announcements", "events", "needs"];
+const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs", "announcements", "events", "needs", "jobs", "openings"];
 const CONTACTS = { heading: "Contacts and links", noun: "contact or link", empty: "No contacts yet. Add the first one.",
   name: "e.g. Baguio General Hospital psychiatry", desc: "Short description", descHint: "What it offers, who it's for, hours" };
 const TEXT = {
@@ -14,6 +14,9 @@ const TEXT = {
   // Shown to visitors even when empty, since it's the main content of the Community Needs page.
   needs: { heading: "Current needs", noun: "need", empty: "No urgent needs right now. Check back soon.", alwaysShow: true,
     name: "e.g. Relief goods for flood-hit families", desc: "Details", descHint: "Who needs it, how much, where to bring it" },
+  // Main content of the Find Work page, so also shown when empty.
+  openings: { heading: "Job openings", noun: "job opening", empty: "No job openings posted right now. Check the links below.", alwaysShow: true, newestFirst: true,
+    name: "e.g. Cashier at a Session Road bakery", desc: "Details", descHint: "Pay, schedule and how to apply" },
 };
 const boxes = [...document.querySelectorAll("section[data-page]")].filter(b => PAGES.includes(b.dataset.page));
 

@@ -20,7 +20,17 @@ html { -webkit-text-size-adjust:100%; }
 body { margin:0; font-family:"Source Sans 3", system-ui, sans-serif; font-size:17px; line-height:1.55; background:var(--mist); color:var(--ink); }
 /* faint topographic contour lines behind everything, colored per theme through the mask */
 body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:var(--topo);
-  -webkit-mask:url("media/topo.svg") center/cover no-repeat; mask:url("media/topo.svg") center/cover no-repeat; }
+  -webkit-mask:var(--mask, url("media/topo.svg") center/cover no-repeat); mask:var(--mask, url("media/topo.svg") center/cover no-repeat); }
+/* service pages swap the contours for their card's line drawing, in the card's color */
+body:has([data-page="volunteer"]) { --c:#0f766e; --mask:url("media/bg-volunteer.svg") 0 0/300px repeat; }
+body:has([data-page="wellness"]) { --c:#7c3aed; --mask:url("media/bg-wellness.svg") 0 0/300px repeat; }
+body:has([data-page="education"]) { --c:#2563eb; --mask:url("media/bg-education.svg") 0 0/300px repeat; }
+body:has([data-page="request-help"]) { --c:#dc2626; --mask:url("media/bg-request-help.svg") 0 0/300px repeat; }
+body:has([data-page="donate"]) { --c:#c2410c; --mask:url("media/bg-donate.svg") 0 0/300px repeat; }
+body:has([data-page="community-needs"]) { --c:#0891b2; --mask:url("media/bg-community-needs.svg") 0 0/300px repeat; }
+body:has([data-page="jobs"]) { --c:#b45309; --mask:url("media/bg-jobs.svg") 0 0/300px repeat; }
+body:has(#resources) { --topo:color-mix(in srgb, var(--c, #1f3a2e) 26%, transparent); }
+:root[data-theme="dark"] body:has(#resources) { --topo:color-mix(in srgb, color-mix(in srgb, var(--c, #8cc4a0) 55%, white) 16%, transparent); }
 h1, h2, h3, .brand { font-family:"Bricolage Grotesque", system-ui, sans-serif; }
 a { color:var(--moss); }
 a:focus-visible, input:focus-visible, button:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
@@ -30,6 +40,13 @@ a:focus-visible, input:focus-visible, button:focus-visible { outline:3px solid v
 .sos a { color:inherit; font-weight:700; }
 
 .wrap { max-width:880px; margin:20px auto 0; padding:0 16px; }
+/* service pages: a tall picture of the service beside the page, only where the screen has room */
+.side-art { display:none; }
+@media (min-width:1240px) {
+  .wrap:has(> .side-art) { position:relative; }
+  .side-art { display:block; position:absolute; right:calc(100% + 8px); top:0; width:min(220px, calc((100vw - 880px) / 2 - 40px)); height:480px;
+    object-fit:cover; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.18); animation:settle .5s ease-out .2s both; }
+}
 
 /* header with ridge line */
 header { position:relative; background:var(--pine); color:#fff; border-radius:16px 16px 0 0; padding:22px 22px 64px; overflow:hidden; }
@@ -56,13 +73,20 @@ main { background:var(--paper); border-radius:0 0 16px 16px; padding:8px 22px 28
 h2 { font-size:1.2rem; margin:0 0 14px; }
 
 /* service grid */
-.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap:10px; }
+.grid { display:grid; grid-template-columns:1fr; gap:10px; }
+@media (min-width:600px) { .grid { grid-template-columns:1fr 1fr; } } /* 4 services: a 2×2 grid */
 .card { display:grid; grid-template-columns:auto 1fr; column-gap:14px; align-content:start; padding:16px; border:1px solid var(--line); border-radius:12px; text-decoration:none; color:inherit; }
 .card[hidden] { display:none; }
-.card:hover { border-color:var(--moss); background:var(--tint); }
+.card:hover { border-color:var(--moss); background-color:var(--tint); }
 .card svg { grid-row:span 2; width:28px; height:28px; padding:8px; box-sizing:content-box; border-radius:50%; background:var(--icon-bg); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .card h3 { margin:2px 0 2px; font-size:1.05rem; font-weight:600; }
 .card p { margin:0; color:var(--muted); font-size:.95rem; }
+/* each service card: a wash of its icon color and a faint line drawing in the corner */
+.card { background:var(--art) right -14px bottom -22px/88px no-repeat, linear-gradient(135deg, transparent 35%, color-mix(in srgb, var(--c, transparent) 16%, transparent)); }
+.card[href="volunteer.html"] { --c:#0f766e; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230f766e' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 95V45'/%3E%3Cpath d='M50 62c-20 0-30-12-30-28 18 0 30 10 30 28z'/%3E%3Cpath d='M50 50c0-20 12-32 32-32 0 20-12 32-32 32z'/%3E%3Cpath d='M25 95h50'/%3E%3C/svg%3E"); }
+.card[href="education.html"] { --c:#2563eb; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%232563eb' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 30C38 22 22 22 10 26v52c12-4 28-4 40 4 12-8 28-8 40-4V26c-12-4-28-4-40 4z'/%3E%3Cpath d='M50 30v52M20 40h20M20 50h20M60 40h20M60 50h20'/%3E%3C/svg%3E"); }
+.card[href="request-help.html"] { --c:#dc2626; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23dc2626' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='55' cy='55' r='35'/%3E%3Ccircle cx='55' cy='55' r='15'/%3E%3Cpath d='M30 30l14 14M80 30 66 44M30 80l14-14M80 80 66 66'/%3E%3C/svg%3E"); }
+.card[href="jobs.html"] { --c:#b45309; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23b45309' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='15' y='35' width='70' height='48' rx='6'/%3E%3Cpath d='M38 35v-8a5 5 0 0 1 5-5h14a5 5 0 0 1 5 5v8M15 55h70M46 55v6h8v-6'/%3E%3C/svg%3E"); }
 .empty { color:var(--muted); display:none; }
 
 /* service pages */
@@ -184,8 +208,7 @@ header input { animation-delay:.35s; }
 /* also replays when search shows a card again, since display:none → visible restarts animations */
 .card { animation:settle .35s ease-out both; transition:transform .15s ease, border-color .15s, background .15s, box-shadow .15s; }
 .grid .card:nth-child(2) { animation-delay:.05s; } .grid .card:nth-child(3) { animation-delay:.1s; }
-.grid .card:nth-child(4) { animation-delay:.15s; } .grid .card:nth-child(5) { animation-delay:.2s; }
-.grid .card:nth-child(6) { animation-delay:.25s; }
+.grid .card:nth-child(4) { animation-delay:.15s; }
 .card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(31,58,46,.12); }
 .card:hover svg { transform:scale(1.08); }
 .card svg { transition:transform .2s ease; }

@@ -1,0 +1,9 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 480' preserveAspectRatio='xMidYMid slice'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#7c3aed'/><stop offset='.75' stop-color='#1f3a2e'/></linearGradient></defs>
+<rect width='220' height='480' fill='url(#g)'/>
+<circle cx='170' cy='60' r='22' fill='#e9b949' opacity='.85'/>
+<g transform='translate(30 110) scale(1.6)' fill='none' stroke='#fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' opacity='.92'><circle cx='50' cy='50' r='12'/><circle cx='50' cy='50' r='26'/><circle cx='50' cy='50' r='40'/></g>
+<path d='M0 360l40-18 40 12 50-26 40 16 50-14v150H0z' fill='#3f6b52'/>
+<g fill='#2c5140'><path transform='translate(30 330) scale(1)' d='M0 0l-10 18h5l-8 14h6l-10 18h34l-10-18h6l-8-14h5z'/><path transform='translate(62 345) scale(0.75)' d='M0 0l-10 18h5l-8 14h6l-10 18h34l-10-18h6l-8-14h5z'/><path transform='translate(150 320) scale(1.1)' d='M0 0l-10 18h5l-8 14h6l-10 18h34l-10-18h6l-8-14h5z'/><path transform='translate(190 340) scale(0.8)' d='M0 0l-10 18h5l-8 14h6l-10 18h34l-10-18h6l-8-14h5z'/></g>
+<path d='M0 410l60-14 60 10 50-12 50 8v78H0z' fill='#1f3a2e'/>
+</svg>
