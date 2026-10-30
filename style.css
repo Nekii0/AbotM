@@ -102,15 +102,15 @@ dialog input:focus-visible, dialog textarea:focus-visible { outline:3px solid va
 .btn:disabled { opacity:.6; cursor:wait; }
 
 /* homepage side panels: stacked under services on phones, one right column on laptops, both sides on big screens */
-.layout { max-width:880px; margin:0 auto; padding:0 16px; display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"main" "right" "left"; column-gap:24px; }
+.layout { max-width:880px; margin:0 auto; padding:0 16px; display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"main" "left" "right"; column-gap:24px; }
 .layout > .wrap { grid-area:main; max-width:none; margin:20px 0 0; padding:0; }
 .side { display:grid; gap:16px; align-content:start; margin-top:16px; }
 .side-right { grid-area:right; }
 .side-left { grid-area:left; }
 .layout:not(:has(.side-left > :not([hidden]))) .side-left { display:none; } /* no events posted */
 @media (min-width:1100px) {
-  .layout { max-width:1260px; grid-template-columns:minmax(0,1fr) 320px; grid-template-areas:"main right" "main left"; }
-  .side-right { margin-top:20px; }
+  .layout { max-width:1260px; grid-template-columns:minmax(0,1fr) 320px; grid-template-areas:"main left" "main right"; }
+  .side-left, .side-right { margin-top:20px; }
 }
 @media (min-width:1500px) {
   .layout { max-width:1580px; grid-template-columns:280px minmax(0,880px) 320px; grid-template-areas:"left main right"; justify-content:center; }
