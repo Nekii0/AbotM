@@ -9,6 +9,7 @@ Abot-Mamamayan community hub: find help, give help, build a stronger community.
 - `index.html`: page content
 - `style.css`: design
 - `script.js`: search box
+- `theme.js`: dark/light mode button (remembers each visitor's choice)
 - `volunteer.html`, `wellness.html`, `education.html`, `donate.html`, `request-help.html`, `community-needs.html`: service pages (admins add contacts and links on each page)
 
 ## Adding services (admins)
