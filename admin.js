@@ -1,4 +1,4 @@
-import { firebaseConfig } from "./firebase-config.js?v=4";
+import { firebaseConfig } from "./firebase-config.js?v=6";
 
 const CDN = "https://www.gstatic.com/firebasejs/10.12.2/";
 const grid = document.getElementById("grid");
