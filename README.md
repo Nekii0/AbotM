@@ -11,12 +11,31 @@ Abot-Mamamayan community hub: find help, give help, build a stronger community.
 - `script.js`: search box
 - `volunteer.html`, `wellness.html`, `education.html`, `donate.html`, `request-help.html`, `community-needs.html`: service pages (replace the green placeholder boxes with your real contacts)
 
+## Adding services (admins)
+
+Admins can sign in and add or remove services on the homepage. Added services are saved in Firebase (free) and shown to every visitor.
+
+Files: `admin.js` (sign-in and saving), `firebase-config.js` (your project's keys), `firestore.rules` (who can save).
+
+One-time setup:
+
+1. Go to https://console.firebase.google.com, click **Add project**, name it `abot-mamamayan`. Google Analytics is optional.
+2. **Build → Firestore Database → Create database**, choose a location near the Philippines (e.g. `asia-southeast1`), start in **production mode**.
+3. **Firestore → Rules**: paste the contents of `firestore.rules`, replace `YOUR_ADMIN_EMAIL@gmail.com` with your admin Google emails, click **Publish**.
+4. **Build → Authentication → Get started → Google**: enable it and save.
+5. **Authentication → Settings → Authorized domains**: add `nekii0.github.io`.
+6. **Project settings → Your apps → Web (`</>`)**: register an app, copy `apiKey`, `authDomain`, `projectId` and `appId` into `firebase-config.js`, commit and push.
+
+Then on the live site, click **Admin sign in** at the bottom, sign in with an admin Google account, and use **+ Add service**.
+
+To add another admin, add their email to the list in Firestore **Rules** and publish. No code change is needed.
+
 ## Publishing
 
 The site is published with GitHub Pages from the `main` branch (**Settings → Pages**).
 Every push to `main` updates the live site in about a minute.
 
-When you change `style.css` or `script.js`, raise the number in `style.css?v=3` / `script.js?v=3` in every `.html` file (for example to `v=4`), so visitors' browsers load the new version instead of an old cached copy.
+When you change `style.css` or `script.js`, raise the number in `style.css?v=4` / `script.js?v=4` in every `.html` file (for example to `v=5`), so visitors' browsers load the new version instead of an old cached copy.
 
 ### Update on github.com
 
