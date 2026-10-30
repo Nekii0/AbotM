@@ -58,3 +58,8 @@ a[href^="tel:"] { font-weight:700; white-space:nowrap; }
 .btn:hover { background:var(--pine-2); }
 
 footer { max-width:880px; margin:0 auto; padding:18px 16px 32px; color:var(--muted); font-size:.9rem; }
+
+/* closing message under the services */
+.closing { margin-top:16px; background:var(--pine); color:#fff; border-radius:12px; padding:20px 22px; }
+.closing h2 { margin:0 0 4px; font-size:clamp(1.15rem, 3vw, 1.4rem); }
+.closing p { margin:0; color:#d6e4db; }
