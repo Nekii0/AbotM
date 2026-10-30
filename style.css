@@ -1,32 +1,60 @@
-:root { --dark:#111; --text:#1f2937; --muted:#6b7280; --green:#16a34a; --bg:#f4f5f7; --card:#fff; }
-* { box-sizing: border-box; }
-body { margin:0; font-family: system-ui, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); }
-.wrap { max-width: 860px; margin: 24px auto; padding: 0 16px; }
-header { background:var(--dark); color:#fff; border-radius:12px 12px 0 0; padding:20px 16px; }
-.top { display:flex; justify-content:space-between; align-items:center; }
-.brand { font-weight:700; font-size:1.2rem; margin:0; }
-.tag { color:var(--green); font-size:.75rem; letter-spacing:.05em; }
-h1 { font-size:1.6rem; margin:14px 0 6px; }
-header p { margin:0 0 14px; font-size:.9rem; }
-input[type=search] { width:100%; padding:10px 12px; border:0; border-radius:8px; font-size:.95rem; }
-main { background:var(--card); border-radius:0 0 12px 12px; padding:20px 16px; }
-h2 { font-size:1.05rem; margin:0 0 14px; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap:12px; }
-.card { display:block; padding:16px; border-radius:10px; text-decoration:none; color:inherit; transition:background .15s; }
+/* Baguio palette: pine forest, mountain mist, sunflower (Panagbenga) */
+:root {
+  --pine:#1f3a2e; --pine-2:#2c5140; --moss:#3f6b52; --mist:#eef2ef; --paper:#fff;
+  --ink:#1c2421; --muted:#5b6b63; --line:#d9e1dc; --sun:#e9b949; --sun-ink:#3d2e05;
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; font-family:"Source Sans 3", system-ui, sans-serif; font-size:17px; line-height:1.55; background:var(--mist); color:var(--ink); }
+h1, h2, h3, .brand { font-family:"Bricolage Grotesque", system-ui, sans-serif; }
+a { color:var(--moss); }
+a:focus-visible, input:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
+
+/* emergency strip on every page */
+.sos { background:var(--sun); color:var(--sun-ink); text-align:center; padding:8px 16px; font-size:.95rem; }
+.sos a { color:inherit; font-weight:700; }
+
+.wrap { max-width:880px; margin:20px auto 0; padding:0 16px; }
+
+/* header with ridge line */
+header { position:relative; background:var(--pine); color:#fff; border-radius:16px 16px 0 0; padding:22px 22px 64px; overflow:hidden; }
+header::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:48px; background:var(--paper);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 880 48' preserveAspectRatio='none'%3E%3Cpath d='M0 48V30l70-14 60 12 90-24 80 20 60-10 100 22 90-26 80 16 70-8 90 18 90-10V48z'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 880 48' preserveAspectRatio='none'%3E%3Cpath d='M0 48V30l70-14 60 12 90-24 80 20 60-10 100 22 90-26 80 16 70-8 90 18 90-10V48z'/%3E%3C/svg%3E") center/100% 100% no-repeat; }
+.top { display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center; }
+.brand { font-weight:800; font-size:1.15rem; letter-spacing:.02em; margin:0; color:#fff; text-decoration:none; }
+.tag { color:#b9d8c4; font-size:.8rem; }
+h1 { font-size:clamp(1.7rem, 4.5vw, 2.5rem); line-height:1.15; font-weight:700; margin:18px 0 8px; max-width:22ch; }
+header p { margin:0 0 18px; color:#d6e4db; }
+input[type=search] { width:100%; padding:13px 16px; border:0; border-radius:10px; font:inherit; color:var(--ink); }
+
+main { background:var(--paper); border-radius:0 0 16px 16px; padding:8px 22px 28px; }
+h2 { font-size:1.2rem; margin:0 0 14px; }
+
+/* service grid */
+.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap:10px; }
+.card { display:grid; grid-template-columns:auto 1fr; column-gap:14px; align-content:start; padding:16px; border:1px solid var(--line); border-radius:12px; text-decoration:none; color:inherit; }
 .card[hidden] { display:none; }
-.card:hover, .card:focus-visible { background:#eef2f7; }
-.card svg { width:26px; height:26px; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.card h3 { margin:8px 0 4px; font-size:1rem; font-weight:500; }
-.card p { margin:0; color:var(--muted); font-size:.85rem; }
+.card:hover { border-color:var(--moss); background:#f6faf7; }
+.card svg { grid-row:span 2; width:28px; height:28px; padding:8px; box-sizing:content-box; border-radius:50%; background:var(--mist); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.card h3 { margin:2px 0 2px; font-size:1.05rem; font-weight:600; }
+.card p { margin:0; color:var(--muted); font-size:.95rem; }
 .empty { color:var(--muted); display:none; }
 
 /* service pages */
-.back { color:#fff; font-size:.85rem; text-decoration:none; opacity:.8; }
-.back:hover { opacity:1; text-decoration:underline; }
-.page h2 { margin-top:22px; }
-.page h2:first-child { margin-top:0; }
-.page p, .page li { line-height:1.6; }
-.page ul { padding-left:20px; }
-.note { background:#f0fdf4; border-left:4px solid var(--green); padding:10px 14px; border-radius:6px; }
-.btn { display:inline-block; background:var(--dark); color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; }
-.btn:hover { background:#333; }
+.back { color:#d6e4db; font-size:.95rem; text-decoration:none; }
+.back:hover { color:#fff; text-decoration:underline; }
+.page { max-width:none; }
+.page > * { max-width:68ch; }
+.page h2 { margin:28px 0 8px; }
+.page h2:first-child { margin-top:12px; }
+.page ul { padding-left:20px; margin:0; }
+.page li { margin-bottom:8px; }
+.note { background:#f4f8f5; border-left:4px solid var(--moss); padding:12px 16px; border-radius:8px; margin:0 0 12px; }
+.note.alert { background:#fdf6e3; border-left-color:var(--sun); }
+.todo { background:#fafafa; border:1px dashed #b8c2bc; color:var(--muted); padding:12px 16px; border-radius:8px; }
+a[href^="tel:"] { font-weight:700; white-space:nowrap; }
+.btn { display:inline-block; background:var(--pine); color:#fff; padding:11px 18px; border-radius:10px; text-decoration:none; font-weight:600; margin:0 8px 8px 0; }
+.btn:hover { background:var(--pine-2); }
+
+footer { max-width:880px; margin:0 auto; padding:18px 16px 32px; color:var(--muted); font-size:.9rem; }
