@@ -115,7 +115,11 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     "auth/popup-blocked": "Your browser blocked the sign-in window. Allow pop-ups for this site and try again.",
     "auth/operation-not-allowed": "Google sign-in is turned off. In Firebase → Authentication → Sign-in method, enable Google.",
   };
-  adminLink.onclick = () => user ? signOut(auth) : signInWithPopup(auth, new GoogleAuthProvider()).catch(e => {
+  // Google sign-in fails inside Facebook/Messenger/Instagram's built-in browsers.
+  const inAppBrowser = /FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram|Line\//i.test(navigator.userAgent);
+  adminLink.onclick = () => user ? signOut(auth)
+    : inAppBrowser ? alert("Sign-in doesn't work inside Messenger or Facebook. Tap ⋯ (top right) → Open in Chrome (or Open in browser), then tap Admin sign in again.")
+    : signInWithPopup(auth, new GoogleAuthProvider()).catch(e => {
     // Closing the window yourself isn't an error worth showing.
     if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request")
       alert(signInError[e.code] || `Sign-in failed (${e.code}). Try again.`);
