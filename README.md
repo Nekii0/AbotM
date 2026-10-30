@@ -9,6 +9,7 @@ Abot-Mamamayan community hub: find help, give help, build a stronger community.
 - `index.html`: page content
 - `style.css`: design
 - `script.js`: search box
+- `volunteer.html`, `wellness.html`, `education.html`, `donate.html`, `request-help.html`, `community-needs.html`: service pages (replace the green placeholder boxes with your real contacts)
 
 ## Publishing
 

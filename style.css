@@ -19,3 +19,14 @@ h2 { font-size:1.05rem; margin:0 0 14px; }
 .card h3 { margin:8px 0 4px; font-size:1rem; font-weight:500; }
 .card p { margin:0; color:var(--muted); font-size:.85rem; }
 .empty { color:var(--muted); display:none; }
+
+/* service pages */
+.back { color:#fff; font-size:.85rem; text-decoration:none; opacity:.8; }
+.back:hover { opacity:1; text-decoration:underline; }
+.page h2 { margin-top:22px; }
+.page h2:first-child { margin-top:0; }
+.page p, .page li { line-height:1.6; }
+.page ul { padding-left:20px; }
+.note { background:#f0fdf4; border-left:4px solid var(--green); padding:10px 14px; border-radius:6px; }
+.btn { display:inline-block; background:var(--dark); color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; }
+.btn:hover { background:#333; }
