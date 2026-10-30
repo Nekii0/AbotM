@@ -27,7 +27,11 @@ One-time setup:
 5. **Authentication → Settings → Authorized domains**: add `nekii0.github.io`.
 6. **Project settings → Your apps → Web (`</>`)**: register an app, copy `apiKey`, `authDomain`, `projectId` and `appId` into `firebase-config.js`, commit and push.
 
-Then on the live site, click **Admin sign in** at the bottom, sign in with an admin Google account, and use **+ Add service**.
+Then on the live site, open a service page, click **Admin sign in** at the bottom and sign in with an admin Google account (in Chrome or Safari, not inside Messenger/Facebook). Admins can then:
+
+- add, edit and remove **Contacts and links** on each service page
+- post **Announcements** and **Upcoming events** on the homepage, and **Current needs** on Community Needs
+- click **Edit page text** (bottom of any page), then click any dashed heading, paragraph or list item to change it. Enter saves, Esc cancels, and clearing the text restores the original. Text with links or phone numbers (hotlines) can't be edited this way, so a typo can't break a number.
 
 To add another admin, add their email to the list in Firestore **Rules** and publish. No code change is needed.
 
