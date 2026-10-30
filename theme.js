@@ -6,6 +6,24 @@ try { saved = localStorage.getItem("theme"); } catch {}
 root.dataset.theme = saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 
 addEventListener("DOMContentLoaded", () => {
+  // Header video: still image for reduced-motion users; pause button only once a real video plays.
+  const video = document.querySelector(".hero-media video");
+  if (video) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) video.pause();
+    video.addEventListener("playing", () => {
+      if (video.parentNode.nextElementSibling?.classList.contains("hero-pause")) return;
+      const pause = document.createElement("button");
+      pause.type = "button";
+      pause.className = "hero-pause";
+      pause.textContent = "Pause video";
+      pause.onclick = () => {
+        video.paused ? video.play() : video.pause();
+        pause.textContent = video.paused ? "Play video" : "Pause video";
+      };
+      video.parentNode.after(pause);
+    });
+  }
+
   const btn = document.getElementById("theme-toggle");
   if (!btn) return;
   const sync = () => {

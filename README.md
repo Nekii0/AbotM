@@ -35,6 +35,12 @@ Then on the live site, open a service page, click **Admin sign in** at the botto
 
 To add another admin, add their email to the list in Firestore **Rules** and publish. No code change is needed.
 
+## Header video
+
+Every page's header plays `media/header.mp4` silently on a loop. Until that file exists, the placeholder picture `media/header.svg` shows instead.
+To add the video: upload a short MP4 (5–15 seconds, landscape, ideally under 4 MB) into the `media` folder on GitHub, named exactly `header.mp4`. No code change is needed.
+Visitors get a "Pause video" button, and people who turn on "reduce motion" on their device see a still frame.
+
 ## Publishing
 
 The site is published with GitHub Pages from the `main` branch (**Settings → Pages**).

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" preserveAspectRatio="xMidYMid slice">
+  <!-- Placeholder: misty Baguio hills and pines. Replace with header.mp4 (see README). -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9cc3b0"/><stop offset="1" stop-color="#e8d9a8"/>
+    </linearGradient>
+    <g id="pine"><path d="M0 0l-14 26h8l-12 22h9l-14 26h46l-14-26h9l-12-22h8z"/><rect x="-3" y="74" width="6" height="10"/></g>
+  </defs>
+  <rect width="1280" height="400" fill="url(#sky)"/>
+  <circle cx="980" cy="110" r="46" fill="#f4e2a6"/>
+  <path d="M0 230l120-50 140 40 160-70 150 60 120-40 170 70 140-50 120 30 160-40v300H0z" fill="#7aa892"/>
+  <path d="M0 280l160-40 130 30 180-60 140 50 170-40 150 50 160-30 190 40v260H0z" fill="#4f7d66"/>
+  <g fill="#2c5140">
+    <use href="#pine" x="90" y="230"/><use href="#pine" x="150" y="250" transform="scale(1)"/>
+    <use href="#pine" x="420" y="215"/><use href="#pine" x="470" y="240"/>
+    <use href="#pine" x="760" y="235"/><use href="#pine" x="820" y="255"/><use href="#pine" x="1100" y="240"/>
+  </g>
+  <path d="M0 330l200-30 180 20 220-40 200 30 240-30 240 30v190H0z" fill="#1f3a2e"/>
+</svg>
