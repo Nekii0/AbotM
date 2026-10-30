@@ -22,20 +22,20 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
   const resources = collection(getFirestore(app), "resources");
   let items = [], user = null, editingId = null;
 
-  box.innerHTML = `<h2>Trusted resources</h2>
+  box.innerHTML = `<h2>Contacts and links</h2>
     <ul class="resources" id="res-list"></ul>
-    <p class="res-empty" id="res-empty" hidden>No resources yet. Add the first one.</p>
-    <button type="button" class="btn add-btn" id="add-res" hidden>+ Add resource</button>`;
+    <p class="res-empty" id="res-empty" hidden>No contacts yet. Add the first one.</p>
+    <button type="button" class="btn add-btn" id="add-res" hidden>+ Add contact or link</button>`;
   document.body.insertAdjacentHTML("beforeend", `<dialog id="res-dialog" aria-labelledby="res-title">
     <form id="res-form">
-      <h2 id="res-title">Add a resource</h2>
+      <h2 id="res-title">Add a contact or link</h2>
       <label>Name <input name="title" required maxlength="60" placeholder="e.g. Baguio General Hospital psychiatry"></label>
       <label>Short description <textarea name="description" required maxlength="140" rows="3" placeholder="What it offers, who it's for, hours"></textarea></label>
-      <label>Link or phone (optional) <input name="link" maxlength="300" placeholder="0917 123 4567 or redcross.org.ph"></label>
+      <label>Phone or website (optional) <input name="link" maxlength="300" placeholder="0917 123 4567 or redcross.org.ph"></label>
       <p class="form-error" id="res-error" role="alert"></p>
       <div class="dialog-actions">
         <button type="button" class="btn ghost" id="res-cancel">Cancel</button>
-        <button type="submit" class="btn" id="res-save">Save resource</button>
+        <button type="submit" class="btn" id="res-save">Save</button>
       </div>
     </form>
   </dialog>`);
@@ -59,24 +59,31 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     editingId = id;
     form.reset();
     formError.textContent = "";
-    document.getElementById("res-title").textContent = id ? "Edit resource" : "Add a resource";
-    if (s) for (const k of ["title", "description", "link"]) form.elements[k].value = s[k] || "";
+    document.getElementById("res-title").textContent = id ? "Edit contact or link" : "Add a contact or link";
+    if (s) for (const k of ["title", "description", "link"]) form.elements[k].value = (s[k] || "").replace(/^tel:/, "");
     dialog.showModal();
   };
 
   const item = (id, s) => {
     const li = document.createElement("li");
     const h3 = document.createElement("h3"), link = safeLink(s.link || "");
-    if (link) {
-      const a = document.createElement("a");
-      a.href = link;
-      a.textContent = s.title;
-      if (link.startsWith("http")) { a.target = "_blank"; a.rel = "noopener"; }
-      h3.append(a);
-    } else h3.textContent = s.title;
+    h3.textContent = s.title;
     const p = document.createElement("p");
     p.textContent = s.description;
     li.append(h3, p);
+    if (link) {
+      // Show the number or site itself, so visitors see who they're contacting before tapping.
+      const a = document.createElement("a");
+      a.className = "res-link";
+      a.href = link;
+      if (link.startsWith("tel:")) a.textContent = "Call " + link.slice(4);
+      else {
+        a.textContent = "Visit " + new URL(link).hostname.replace(/^www\./, "");
+        a.target = "_blank";
+        a.rel = "noopener";
+      }
+      li.append(a);
+    }
     if (user) {
       const tools = document.createElement("div");
       tools.className = "res-tools";
@@ -146,7 +153,7 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
       formError.textContent = explain(err);
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = "Save resource";
+      saveBtn.textContent = "Save";
     }
   };
 }

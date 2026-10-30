@@ -72,6 +72,7 @@ footer { max-width:880px; margin:0 auto; padding:18px 16px 32px; color:var(--mut
 .resources h3 a { text-decoration:none; }
 .resources h3 a:hover { text-decoration:underline; }
 .resources p { margin:0; color:var(--muted); }
+.res-link { display:inline-block; margin-top:6px; font-weight:700; }
 .res-tools { display:flex; gap:14px; margin-top:6px; }
 .res-empty { color:var(--muted); }
 .add-btn { margin-top:14px; border:0; font:inherit; font-weight:600; cursor:pointer; }

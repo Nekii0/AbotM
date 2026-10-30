@@ -9,11 +9,11 @@ Abot-Mamamayan community hub: find help, give help, build a stronger community.
 - `index.html`: page content
 - `style.css`: design
 - `script.js`: search box
-- `volunteer.html`, `wellness.html`, `education.html`, `donate.html`, `request-help.html`, `community-needs.html`: service pages (replace the green placeholder boxes with your real contacts)
+- `volunteer.html`, `wellness.html`, `education.html`, `donate.html`, `request-help.html`, `community-needs.html`: service pages (admins add contacts and links on each page)
 
 ## Adding services (admins)
 
-Admins can sign in at the bottom of any service page (Volunteer, Mental Wellness, etc.) and add, edit or remove that page's **Trusted resources**. They are saved in Firebase (free) and shown to every visitor.
+Admins can sign in at the bottom of any service page (Volunteer, Mental Wellness, etc.) and add, edit or remove that page's **Contacts and links**. They are saved in Firebase (free) and shown to every visitor.
 
 Files: `admin.js` (sign-in and saving), `firebase-config.js` (your project's keys), `firestore.rules` (who can save; paste into Firebase → Firestore → Rules).
 
