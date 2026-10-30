@@ -1,10 +1,18 @@
 import { firebaseConfig } from "./firebase-config.js?v=7";
 
-// Each service page has <section id="resources" data-page="..."> where admins add resources.
+// Any <section data-page="..."> becomes a list admins can add to: contacts on service pages,
+// announcements and events on the homepage. All are stored in the "resources" collection by page.
 const CDN = "https://www.gstatic.com/firebasejs/10.12.2/";
-const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs"];
-const box = document.getElementById("resources");
-const page = box?.dataset.page;
+const PAGES = ["volunteer", "wellness", "education", "donate", "request-help", "community-needs", "announcements", "events"];
+const CONTACTS = { heading: "Contacts and links", noun: "contact or link", empty: "No contacts yet. Add the first one.",
+  name: "e.g. Baguio General Hospital psychiatry", desc: "Short description", descHint: "What it offers, who it's for, hours" };
+const TEXT = {
+  announcements: { heading: "Announcements", noun: "announcement", empty: "No announcements yet.", newestFirst: true,
+    name: "e.g. Relief drive this Saturday", desc: "Details", descHint: "What's happening and what people should do" },
+  events: { heading: "Upcoming events", noun: "event", empty: "No upcoming events yet.",
+    name: "e.g. Burnham Park clean-up", desc: "When and where", descHint: "e.g. Sat, Nov 8 · 7 AM · Burnham Park" },
+};
+const boxes = [...document.querySelectorAll("section[data-page]")].filter(b => PAGES.includes(b.dataset.page));
 
 // Only web links and phone numbers; blocks javascript: and other unsafe links.
 const safeLink = v => /^(https?:\/\/\S+|tel:\+?[0-9 -]+)$/i.test(v) ? v : "";
@@ -12,7 +20,7 @@ const safeLink = v => /^(https?:\/\/\S+|tel:\+?[0-9 -]+)$/i.test(v) ? v : "";
 const toLink = v => /^[+(]?[0-9][0-9 ().-]{5,}$/.test(v) ? "tel:" + v.replace(/[^0-9+]/g, "")
   : /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(v) ? "https://" + v : v;
 
-if (firebaseConfig.apiKey && PAGES.includes(page)) {
+if (firebaseConfig.apiKey && boxes.length) {
   const { initializeApp } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
   const { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
@@ -20,17 +28,13 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const resources = collection(getFirestore(app), "resources");
-  let items = [], user = null, editingId = null;
+  let docs = [], user = null, editing = null;
 
-  box.innerHTML = `<h2>Contacts and links</h2>
-    <ul class="resources" id="res-list"></ul>
-    <p class="res-empty" id="res-empty" hidden>No contacts yet. Add the first one.</p>
-    <button type="button" class="btn add-btn" id="add-res" hidden>+ Add contact or link</button>`;
   document.body.insertAdjacentHTML("beforeend", `<dialog id="res-dialog" aria-labelledby="res-title">
     <form id="res-form">
-      <h2 id="res-title">Add a contact or link</h2>
-      <label>Name <input name="title" required maxlength="60" placeholder="e.g. Baguio General Hospital psychiatry"></label>
-      <label>Short description <textarea name="description" required maxlength="140" rows="3" placeholder="What it offers, who it's for, hours"></textarea></label>
+      <h2 id="res-title"></h2>
+      <label>Name <input name="title" required maxlength="60"></label>
+      <label><span id="res-desc-label"></span> <textarea name="description" required maxlength="140" rows="3"></textarea></label>
       <label>Phone or website (optional) <input name="link" maxlength="300" placeholder="0917 123 4567 or redcross.org.ph"></label>
       <p class="form-error" id="res-error" role="alert"></p>
       <div class="dialog-actions">
@@ -39,9 +43,6 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
       </div>
     </form>
   </dialog>`);
-  const list = document.getElementById("res-list");
-  const empty = document.getElementById("res-empty");
-  const addBtn = document.getElementById("add-res");
   const dialog = document.getElementById("res-dialog");
   const form = document.getElementById("res-form");
   const formError = document.getElementById("res-error");
@@ -55,16 +56,20 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     ? "This account isn't an admin. Ask the site owner to add your email to the Firebase rules."
     : "Couldn't save. Check your connection and try again.";
 
-  const open = (id, s) => {
-    editingId = id;
+  const open = (page, id, s) => {
+    const t = TEXT[page] || CONTACTS;
+    editing = { page, id };
     form.reset();
     formError.textContent = "";
-    document.getElementById("res-title").textContent = id ? "Edit contact or link" : "Add a contact or link";
+    document.getElementById("res-title").textContent = (id ? "Edit " : "Add ") + t.noun;
+    document.getElementById("res-desc-label").textContent = t.desc;
+    form.elements.title.placeholder = t.name;
+    form.elements.description.placeholder = t.descHint;
     if (s) for (const k of ["title", "description", "link"]) form.elements[k].value = (s[k] || "").replace(/^tel:/, "");
     dialog.showModal();
   };
 
-  const item = (id, s) => {
+  const item = (page, id, s) => {
     const li = document.createElement("li");
     const h3 = document.createElement("h3"), link = safeLink(s.link || "");
     h3.textContent = s.title;
@@ -87,7 +92,7 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     if (user) {
       const tools = document.createElement("div");
       tools.className = "res-tools";
-      for (const [label, fn] of [["Edit", () => open(id, s)],
+      for (const [label, fn] of [["Edit", () => open(page, id, s)],
         ["Remove", () => confirm(`Remove "${s.title}" for everyone?`) && deleteDoc(doc(resources, id)).catch(e => alert(explain(e)))]]) {
         const b = document.createElement("button");
         b.type = "button";
@@ -102,18 +107,34 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
     return li;
   };
 
+  for (const box of boxes) {
+    const t = TEXT[box.dataset.page] || CONTACTS;
+    box.innerHTML = `<h2></h2><ul class="resources"></ul><p class="res-empty" hidden></p>
+      <button type="button" class="btn add-btn" hidden></button>`;
+    box.querySelector("h2").textContent = t.heading;
+    box.querySelector(".res-empty").textContent = t.empty;
+    box.querySelector(".add-btn").textContent = "+ Add " + t.noun;
+    box.querySelector(".add-btn").onclick = () => open(box.dataset.page, null);
+  }
+
   const render = () => {
-    list.replaceChildren(...items.map(d => item(d.id, d.data())));
-    box.hidden = !items.length && !user;
-    empty.hidden = !!items.length;
-    addBtn.hidden = !user;
+    for (const box of boxes) {
+      const page = box.dataset.page;
+      // Sorted here instead of in the query, so Firestore needs no extra index.
+      const mine = docs.filter(d => d.data().page === page)
+        .sort((a, b) => (a.data().createdAt?.seconds ?? Infinity) - (b.data().createdAt?.seconds ?? Infinity));
+      if (TEXT[page]?.newestFirst) mine.reverse();
+      box.querySelector(".resources").replaceChildren(...mine.map(d => item(page, d.id, d.data())));
+      box.hidden = !mine.length && !user;
+      box.querySelector(".res-empty").hidden = !!mine.length;
+      box.querySelector(".add-btn").hidden = !user;
+    }
   };
 
-  // Sorted here instead of in the query, so Firestore needs no extra index.
-  onSnapshot(query(resources, where("page", "==", page)), snap => {
-    items = snap.docs.sort((a, b) => (a.data().createdAt?.seconds ?? Infinity) - (b.data().createdAt?.seconds ?? Infinity));
+  onSnapshot(query(resources, where("page", "in", boxes.map(b => b.dataset.page))), snap => {
+    docs = snap.docs;
     render();
-  }, () => console.warn("Could not load resources"));
+  }, () => console.warn("Could not load lists"));
 
   onAuthStateChanged(auth, u => {
     user = u;
@@ -135,19 +156,18 @@ if (firebaseConfig.apiKey && PAGES.includes(page)) {
       alert(signInError[e.code] || `Sign-in failed (${e.code}). Try again.`);
   });
 
-  addBtn.onclick = () => open(null);
   document.getElementById("res-cancel").onclick = () => dialog.close();
   form.onsubmit = async e => {
     e.preventDefault();
     const f = new FormData(form);
     const s = { title: f.get("title").trim(), description: f.get("description").trim(), link: toLink(f.get("link").trim()) };
-    if (!s.title || !s.description) { formError.textContent = "Add a name and a short description."; return; }
+    if (!s.title || !s.description) { formError.textContent = "Fill in both the name and the details."; return; }
     if (s.link && !safeLink(s.link)) { formError.textContent = "Enter a phone number (like 0917 123 4567) or a website (like redcross.org.ph)."; return; }
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
     try {
-      if (editingId) await updateDoc(doc(resources, editingId), s);
-      else await addDoc(resources, { ...s, page, createdAt: serverTimestamp() });
+      if (editing.id) await updateDoc(doc(resources, editing.id), s);
+      else await addDoc(resources, { ...s, page: editing.page, createdAt: serverTimestamp() });
       dialog.close();
     } catch (err) {
       formError.textContent = explain(err);
