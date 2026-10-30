@@ -1,7 +1,7 @@
 /* Baguio palette: pine forest, mountain mist, sunflower (Panagbenga) */
 :root {
   --pine:#1f3a2e; --pine-2:#2c5140; --moss:#3f6b52; --mist:#eef2ef; --paper:#fff;
-  --ink:#1c2421; --muted:#5b6b63; --line:#d9e1dc; --sun:#e9b949; --sun-ink:#3d2e05;
+  --ink:#1c2421; --muted:#5b6b63; --line:#d9e1dc; --sun:#e9b949; --sun-ink:#3d2e05; --topo:rgba(31,58,46,.14);
   --tint:#f6faf7; --note:#f4f8f5; --alert-bg:#fdf6e3; --todo-bg:#fafafa; --todo-line:#b8c2bc;
   --field:#fff; --btn:var(--pine); --btn-2:var(--pine-2); --danger:#a3261b; --icon-bg:var(--mist);
   color-scheme:light;
@@ -9,7 +9,7 @@
 /* dark: night in the pines. theme.js sets data-theme from the saved choice or the device setting */
 :root[data-theme="dark"] {
   --pine:#24473a; --pine-2:#2f5a45; --moss:#8cc4a0; --mist:#0c120f; --paper:#151d19;
-  --ink:#e3ebe6; --muted:#9fb2a7; --line:#2d3b34; --sun-ink:#2b2003;
+  --ink:#e3ebe6; --muted:#9fb2a7; --line:#2d3b34; --sun-ink:#2b2003; --topo:rgba(140,196,160,.1);
   --tint:#1e2b24; --note:#1c2a22; --alert-bg:#2d2610; --todo-bg:#1a231f; --todo-line:#3c4c44;
   --field:#223029; --btn:#2f5a45; --btn-2:#3a6c53; --danger:#ff8f80; --icon-bg:#dfe9e3;
   color-scheme:dark;
@@ -18,6 +18,9 @@
 [hidden] { display:none !important; } /* class display rules (.btn, .card) must not override hidden */
 html { -webkit-text-size-adjust:100%; }
 body { margin:0; font-family:"Source Sans 3", system-ui, sans-serif; font-size:17px; line-height:1.55; background:var(--mist); color:var(--ink); }
+/* faint topographic contour lines behind everything, colored per theme through the mask */
+body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:var(--topo);
+  -webkit-mask:url("media/topo.svg") center/cover no-repeat; mask:url("media/topo.svg") center/cover no-repeat; }
 h1, h2, h3, .brand { font-family:"Bricolage Grotesque", system-ui, sans-serif; }
 a { color:var(--moss); }
 a:focus-visible, input:focus-visible, button:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
