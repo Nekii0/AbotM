@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Site icon: a Benguet pine against a ridge and the Panagbenga sun, in the site's colors. -->
+  <rect width="64" height="64" rx="14" fill="#1f3a2e"/>
+  <circle cx="45" cy="19" r="8" fill="#e9b949"/>
+  <path d="M0 44l14-8 12 5 14-11 12 7 12-4v31H0z" fill="#3f6b52"/>
+  <path d="M26 10l-9 15h5l-8 12h6l-9 13h30l-9-13h6l-8-12h5z" fill="#eef2ef"/>
+  <rect x="23.5" y="50" width="5" height="7" rx="1" fill="#eef2ef"/>
+</svg>
