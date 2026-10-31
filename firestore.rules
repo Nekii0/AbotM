@@ -42,5 +42,18 @@ service cloud.firestore {
         && request.resource.data.page is string && request.resource.data.page.size() <= 40;
       allow delete: if isAdmin();
     }
+
+    // Volunteer sign-ups from volunteer.html: anyone can send one, only admins can read or remove them.
+    match /volunteers/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'barangay', 'contact', 'availability', 'interests', 'note', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
+        && request.resource.data.barangay is string && request.resource.data.barangay.size() > 0 && request.resource.data.barangay.size() <= 60
+        && request.resource.data.contact is string && request.resource.data.contact.size() > 0 && request.resource.data.contact.size() <= 100
+        && request.resource.data.availability in ['Weekdays', 'Weekends', 'Evenings', 'Anytime']
+        && request.resource.data.interests is list && request.resource.data.interests.size() > 0 && request.resource.data.interests.size() <= 5
+        && request.resource.data.note is string && request.resource.data.note.size() <= 300
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isAdmin();
+    }
   }
 }

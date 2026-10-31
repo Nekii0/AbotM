@@ -263,3 +263,8 @@ dialog[open]::backdrop { animation:fade .22s ease-out; }
 
 .form-privacy { margin:0 0 12px; color:var(--muted); font-size:.85rem; }
 .form-done { margin:14px 0 0; padding:12px 16px; border-radius:8px; background:var(--note); border-left:4px solid var(--moss); font-weight:600; }
+.page > .signups { margin-top:20px; }
+.signups h2 { margin-top:0; }
+.signups-note { font-family:"Source Sans 3", system-ui, sans-serif; font-size:.85rem; font-weight:400; color:var(--muted); }
+.signups .res-tools { align-items:baseline; }
+.signups .res-link { margin-top:0; }

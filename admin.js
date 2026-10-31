@@ -27,11 +27,12 @@ const toLink = v => /^[+(]?[0-9][0-9 ().-]{5,}$/.test(v) ? "tel:" + v.replace(/[
   : /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(v) ? "https://" + v : v;
 
 if (firebaseConfig.apiKey && boxes.length) {
-  const { initializeApp } = await import(CDN + "firebase-app.js");
+  const { initializeApp, getApps } = await import(CDN + "firebase-app.js");
   const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = await import(CDN + "firebase-auth.js");
   const { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, getDoc, onSnapshot, query, where, serverTimestamp } = await import(CDN + "firebase-firestore.js");
 
-  const app = initializeApp(firebaseConfig);
+  // volunteer.js may have started Firebase already on the Volunteer page.
+  const app = getApps()[0] || initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   const resources = collection(db, "resources");

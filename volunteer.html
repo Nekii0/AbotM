@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <script src="theme.js?v=4"></script>
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=35">
 </head>
 <body>
 <div class="sos">Emergency in Baguio? Dial <a href="tel:911">911</a> (24/7) <span class="sep">·</span> <a class="all" href="index.html#hotlines">All hotlines →</a></div>
@@ -33,6 +33,11 @@
     </ul>
 
     <p class="cta-row signup" id="sign-up">Ready to help? Tell us when you're free and we'll match you with an activity. <button type="button" class="btn" id="signup-open">Sign up to volunteer</button></p>
+    <section class="signups" id="signups" hidden>
+      <h2>Volunteer sign-ups <span class="signups-note">(only admins see this)</span></h2>
+      <ul class="resources" id="signups-list"></ul>
+      <p class="res-empty" id="signups-empty" hidden>No sign-ups yet.</p>
+    </section>
 
 
     <h2>Volunteer with groups in Baguio</h2>
@@ -86,7 +91,7 @@
   <p class="form-done" id="volunteer-done" role="status" hidden>Salamat! We got your sign-up and will contact you about the next activity.</p>
 </dialog>
 <footer>Abot-Mamamayan, a community hub for Baguio City. Hotlines last checked October 2026.</footer>
-<script src="volunteer.js?v=1" defer></script>
-<script type="module" src="admin.js?v=15"></script>
+<script type="module" src="volunteer.js?v=2"></script>
+<script type="module" src="admin.js?v=16"></script>
 </body>
 </html>
