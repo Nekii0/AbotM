@@ -32,6 +32,38 @@
       <li>Skills sharing: teaching a trade, computer basics or livelihood skills</li>
     </ul>
 
+    <section class="signup" id="sign-up">
+      <h2>Sign up to volunteer</h2>
+      <p>Tell us a little about yourself and we'll match you with the next activity that needs hands.</p>
+      <form id="volunteer-form">
+        <label>Your name <input name="name" required maxlength="60" autocomplete="name"></label>
+        <label>Barangay <input name="barangay" required maxlength="60" placeholder="e.g. Irisan"></label>
+        <label>Phone or email <input name="contact" required maxlength="100" autocomplete="tel" placeholder="0917 123 4567 or you@email.com"></label>
+        <label>When are you available?
+          <select name="availability" required>
+            <option value="">Choose one</option>
+            <option>Weekdays</option>
+            <option>Weekends</option>
+            <option>Evenings</option>
+            <option>Anytime</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend>What would you like to help with?</legend>
+          <label class="check"><input type="checkbox" name="interests" value="Relief operations"> Relief operations</label>
+          <label class="check"><input type="checkbox" name="interests" value="Tutoring"> Tutoring</label>
+          <label class="check"><input type="checkbox" name="interests" value="Clean-up drives"> Clean-up drives</label>
+          <label class="check"><input type="checkbox" name="interests" value="Feeding programs"> Feeding programs</label>
+          <label class="check"><input type="checkbox" name="interests" value="Skills sharing"> Skills sharing</label>
+        </fieldset>
+        <label>Anything else? (optional) <textarea name="note" maxlength="300" rows="2" placeholder="Skills, languages, or how many people are coming"></textarea></label>
+        <p class="form-error" id="volunteer-error" role="alert"></p>
+        <button type="submit" class="btn">Send sign-up</button>
+        <p class="form-privacy">Only the site's admins can see what you send. We'll use it only to contact you about volunteering.</p>
+      </form>
+      <p class="form-done" id="volunteer-done" role="status" hidden>Salamat! We got your sign-up and will contact you about the next activity.</p>
+    </section>
+
     <h2>Volunteer with groups in Baguio</h2>
     <ul>
       <li><a href="https://redcross.org.ph/get-involved/volunteer" target="_blank" rel="noopener">Philippine Red Cross</a>: the Baguio Chapter is on Harrison Road. Visit the chapter to sign up for disaster response, first aid and blood services.</li>
@@ -41,7 +73,7 @@
     <h2>How to get started</h2>
     <ul>
       <li>Choose the kind of work that fits your time and skills.</li>
-      <li>Contact us with your name, barangay and when you're available.</li>
+      <li>Fill in the <a href="#sign-up">sign-up form</a> with your name, barangay and when you're available.</li>
       <li>We'll match you with the next activity that needs hands.</li>
     </ul>
 

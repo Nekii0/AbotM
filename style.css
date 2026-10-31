@@ -239,21 +239,11 @@ dialog[open]::backdrop { animation:fade .22s ease-out; }
 @keyframes saved { from { background:rgba(233,185,73,.45); } }
 [data-key].saved { animation:saved 1.2s ease-out; }
 
-/* homepage Volunteer card: title links to the page, and a sign-up form opens inside the card */
-.card-volunteer { --c:#0f766e; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230f766e' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 95V45'/%3E%3Cpath d='M50 62c-20 0-30-12-30-28 18 0 30 10 30 28z'/%3E%3Cpath d='M50 50c0-20 12-32 32-32 0 20-12 32-32 32z'/%3E%3Cpath d='M25 95h50'/%3E%3C/svg%3E"); }
-.card-volunteer h3 a { color:inherit; text-decoration:none; }
-.card-volunteer h3 a::after { content:" →"; color:var(--moss); }
-.card-volunteer h3 a:hover { color:var(--moss); text-decoration:underline; }
-.card-volunteer:hover { transform:none; }
-.card-volunteer:has(details[open]) { grid-column:1 / -1; background-color:var(--paper); }
-.card-signup { grid-column:1 / -1; margin-top:12px; }
-.card-signup summary { display:inline-block; cursor:pointer; font-weight:600; color:#fff; background:var(--btn); padding:7px 14px; border-radius:999px; font-size:.92rem; list-style:none; }
-.card-signup summary::-webkit-details-marker { display:none; }
-.card-signup summary::before { content:"+ "; }
-.card-signup[open] summary { background:var(--mist); color:var(--ink); }
-.card-signup[open] summary::before { content:"− "; }
-.card-signup summary:hover { background:var(--btn-2); color:#fff; }
-.card-signup summary:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
+/* volunteer sign-up form on volunteer.html */
+.page > .signup { max-width:none; margin-top:28px; padding:18px 20px 20px; border:1px solid var(--line); border-radius:14px;
+  background:linear-gradient(135deg, transparent 45%, color-mix(in srgb, var(--c, transparent) 12%, transparent)); scroll-margin-top:16px; }
+.signup h2 { margin:0 0 4px; }
+.signup > p { margin:0 0 4px; color:var(--muted); }
 #volunteer-form { display:grid; grid-template-columns:1fr; gap:4px 16px; margin-top:14px; animation:settle .3s ease-out; }
 @media (min-width:600px) { #volunteer-form { grid-template-columns:1fr 1fr; } }
 #volunteer-form > label, #volunteer-form fieldset { font-weight:600; margin-bottom:10px; }
