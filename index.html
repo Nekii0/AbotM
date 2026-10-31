@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <script src="theme.js?v=4"></script>
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=33">
 <script src="script.js?v=7" defer></script>
 </head>
 <body>
@@ -30,10 +30,40 @@
   <main>
     <h2>Explore our services</h2>
     <div class="grid" id="grid">
-      <a class="card" href="volunteer.html">
+      <div class="card card-volunteer">
         <svg viewBox="0 0 24 24" stroke="#0f766e"><path d="M4 14l4-4 3 3 6-6"/><path d="M14 7h3v3"/><path d="M3 20h18"/></svg>
-        <h3>Volunteer</h3><p>Find ways to serve your community.</p>
-      </a>
+        <h3><a href="volunteer.html">Volunteer</a></h3><p>Find ways to serve your community.</p>
+        <details class="card-signup">
+          <summary>Sign up to volunteer</summary>
+          <form id="volunteer-form">
+            <label>Your name <input name="name" required maxlength="60" autocomplete="name"></label>
+            <label>Barangay <input name="barangay" required maxlength="60" placeholder="e.g. Irisan"></label>
+            <label>Phone or email <input name="contact" required maxlength="100" autocomplete="tel" placeholder="0917 123 4567 or you@email.com"></label>
+            <label>When are you available?
+              <select name="availability" required>
+                <option value="">Choose one</option>
+                <option>Weekdays</option>
+                <option>Weekends</option>
+                <option>Evenings</option>
+                <option>Anytime</option>
+              </select>
+            </label>
+            <fieldset>
+              <legend>What would you like to help with?</legend>
+              <label class="check"><input type="checkbox" name="interests" value="Relief operations"> Relief operations</label>
+              <label class="check"><input type="checkbox" name="interests" value="Tutoring"> Tutoring</label>
+              <label class="check"><input type="checkbox" name="interests" value="Clean-up drives"> Clean-up drives</label>
+              <label class="check"><input type="checkbox" name="interests" value="Feeding programs"> Feeding programs</label>
+              <label class="check"><input type="checkbox" name="interests" value="Skills sharing"> Skills sharing</label>
+            </fieldset>
+            <label>Anything else? (optional) <textarea name="note" maxlength="300" rows="2" placeholder="Skills, languages, or how many people are coming"></textarea></label>
+            <p class="form-error" id="volunteer-error" role="alert"></p>
+            <button type="submit" class="btn">Send sign-up</button>
+            <p class="form-privacy">Only the site's admins can see what you send. We'll use it only to contact you about volunteering.</p>
+          </form>
+          <p class="form-done" id="volunteer-done" role="status" hidden>Salamat! We got your sign-up and will contact you about the next activity.</p>
+        </details>
+      </div>
       <a class="card" href="education.html">
         <svg viewBox="0 0 24 24" stroke="#2563eb"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>
         <h3>Education</h3><p>Discover scholarships and training.</p>

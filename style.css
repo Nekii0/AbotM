@@ -238,3 +238,33 @@ dialog[open]::backdrop { animation:fade .22s ease-out; }
   background:var(--sun); color:var(--sun-ink); padding:10px 16px; border-radius:12px; font-size:.95rem; box-shadow:0 8px 24px rgba(0,0,0,.25); animation:settle .3s ease-out; }
 @keyframes saved { from { background:rgba(233,185,73,.45); } }
 [data-key].saved { animation:saved 1.2s ease-out; }
+
+/* homepage Volunteer card: title links to the page, and a sign-up form opens inside the card */
+.card-volunteer { --c:#0f766e; --art:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%230f766e' stroke-width='3' stroke-opacity='.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M50 95V45'/%3E%3Cpath d='M50 62c-20 0-30-12-30-28 18 0 30 10 30 28z'/%3E%3Cpath d='M50 50c0-20 12-32 32-32 0 20-12 32-32 32z'/%3E%3Cpath d='M25 95h50'/%3E%3C/svg%3E"); }
+.card-volunteer h3 a { color:inherit; text-decoration:none; }
+.card-volunteer h3 a::after { content:" →"; color:var(--moss); }
+.card-volunteer h3 a:hover { color:var(--moss); text-decoration:underline; }
+.card-volunteer:hover { transform:none; }
+.card-volunteer:has(details[open]) { grid-column:1 / -1; background-color:var(--paper); }
+.card-signup { grid-column:1 / -1; margin-top:12px; }
+.card-signup summary { display:inline-block; cursor:pointer; font-weight:600; color:#fff; background:var(--btn); padding:7px 14px; border-radius:999px; font-size:.92rem; list-style:none; }
+.card-signup summary::-webkit-details-marker { display:none; }
+.card-signup summary::before { content:"+ "; }
+.card-signup[open] summary { background:var(--mist); color:var(--ink); }
+.card-signup[open] summary::before { content:"− "; }
+.card-signup summary:hover { background:var(--btn-2); color:#fff; }
+.card-signup summary:focus-visible { outline:3px solid var(--sun); outline-offset:2px; }
+#volunteer-form { display:grid; grid-template-columns:1fr; gap:4px 16px; margin-top:14px; animation:settle .3s ease-out; }
+@media (min-width:600px) { #volunteer-form { grid-template-columns:1fr 1fr; } }
+#volunteer-form > label, #volunteer-form fieldset { font-weight:600; margin-bottom:10px; }
+#volunteer-form fieldset, #volunteer-form > label:has(textarea), #volunteer-form .form-error, #volunteer-form .form-privacy, #volunteer-form .btn { grid-column:1 / -1; }
+#volunteer-form input:not([type=checkbox]), #volunteer-form select, #volunteer-form textarea { display:block; width:100%; margin-top:4px; padding:10px 12px;
+  border:1px solid var(--line); border-radius:8px; font:inherit; font-weight:400; background:var(--field); color:var(--ink); }
+#volunteer-form fieldset { border:1px solid var(--line); border-radius:8px; padding:8px 12px 10px; display:flex; flex-wrap:wrap; gap:6px 18px; }
+#volunteer-form legend { padding:0 4px; }
+#volunteer-form .check { display:flex; align-items:center; gap:6px; font-weight:400; cursor:pointer; }
+#volunteer-form .check input { width:18px; height:18px; accent-color:var(--moss); }
+#volunteer-form input:focus-visible, #volunteer-form select:focus-visible, #volunteer-form textarea:focus-visible { outline:3px solid var(--sun); outline-offset:1px; }
+#volunteer-form .btn { justify-self:start; border:0; font:inherit; font-weight:600; cursor:pointer; margin:0; }
+.form-privacy { margin:4px 0 0; color:var(--muted); font-size:.85rem; }
+.form-done { margin:14px 0 0; padding:12px 16px; border-radius:8px; background:var(--note); border-left:4px solid var(--moss); font-weight:600; }
