@@ -1,6 +1,6 @@
 # AbotM
 
-Abot-Mamamayan community hub: find help, give help, build a stronger community.
+Abot-Kamay community hub: find help, give help, build a stronger community.
 
 **Live site:** https://nekii0.github.io/AbotM/
 
