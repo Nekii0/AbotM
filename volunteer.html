@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Source+Sans+3:wght@400;600;700&display=swap">
 <script src="theme.js?v=4"></script>
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 <div class="sos">Emergency in Baguio? Dial <a href="tel:911">911</a> (24/7) <span class="sep">·</span> <a class="all" href="index.html#hotlines">All hotlines →</a></div>
@@ -32,37 +32,8 @@
       <li>Skills sharing: teaching a trade, computer basics or livelihood skills</li>
     </ul>
 
-    <section class="signup" id="sign-up">
-      <h2>Sign up to volunteer</h2>
-      <p>Tell us a little about yourself and we'll match you with the next activity that needs hands.</p>
-      <form id="volunteer-form">
-        <label>Your name <input name="name" required maxlength="60" autocomplete="name"></label>
-        <label>Barangay <input name="barangay" required maxlength="60" placeholder="e.g. Irisan"></label>
-        <label>Phone or email <input name="contact" required maxlength="100" autocomplete="tel" placeholder="0917 123 4567 or you@email.com"></label>
-        <label>When are you available?
-          <select name="availability" required>
-            <option value="">Choose one</option>
-            <option>Weekdays</option>
-            <option>Weekends</option>
-            <option>Evenings</option>
-            <option>Anytime</option>
-          </select>
-        </label>
-        <fieldset>
-          <legend>What would you like to help with?</legend>
-          <label class="check"><input type="checkbox" name="interests" value="Relief operations"> Relief operations</label>
-          <label class="check"><input type="checkbox" name="interests" value="Tutoring"> Tutoring</label>
-          <label class="check"><input type="checkbox" name="interests" value="Clean-up drives"> Clean-up drives</label>
-          <label class="check"><input type="checkbox" name="interests" value="Feeding programs"> Feeding programs</label>
-          <label class="check"><input type="checkbox" name="interests" value="Skills sharing"> Skills sharing</label>
-        </fieldset>
-        <label>Anything else? (optional) <textarea name="note" maxlength="300" rows="2" placeholder="Skills, languages, or how many people are coming"></textarea></label>
-        <p class="form-error" id="volunteer-error" role="alert"></p>
-        <button type="submit" class="btn">Send sign-up</button>
-        <p class="form-privacy">Only the site's admins can see what you send. We'll use it only to contact you about volunteering.</p>
-      </form>
-      <p class="form-done" id="volunteer-done" role="status" hidden>Salamat! We got your sign-up and will contact you about the next activity.</p>
-    </section>
+    <p class="cta-row signup" id="sign-up">Ready to help? Tell us when you're free and we'll match you with an activity. <button type="button" class="btn" id="signup-open">Sign up to volunteer</button></p>
+
 
     <h2>Volunteer with groups in Baguio</h2>
     <ul>
@@ -73,14 +44,49 @@
     <h2>How to get started</h2>
     <ul>
       <li>Choose the kind of work that fits your time and skills.</li>
-      <li>Fill in the <a href="#sign-up">sign-up form</a> with your name, barangay and when you're available.</li>
+      <li>Tap <a href="#sign-up">Sign up to volunteer</a> and fill in with your name, barangay and when you're available.</li>
       <li>We'll match you with the next activity that needs hands.</li>
     </ul>
 
     <section id="resources" data-page="volunteer" hidden></section>
   </main>
 </div>
+<dialog id="signup-dialog" aria-labelledby="signup-title">
+  <form id="volunteer-form">
+    <h2 id="signup-title">Sign up to volunteer</h2>
+    <p class="signup-intro">Tell us a little about yourself and we'll match you with the next activity that needs hands.</p>
+    <label>Your name <input name="name" required maxlength="60" autocomplete="name"></label>
+    <label>Barangay <input name="barangay" required maxlength="60" placeholder="e.g. Irisan"></label>
+    <label>Phone or email <input name="contact" required maxlength="100" autocomplete="tel" placeholder="0917 123 4567 or you@email.com"></label>
+    <label>When are you available?
+      <select name="availability" required>
+        <option value="">Choose one</option>
+        <option>Weekdays</option>
+        <option>Weekends</option>
+        <option>Evenings</option>
+        <option>Anytime</option>
+      </select>
+    </label>
+    <fieldset>
+      <legend>What would you like to help with?</legend>
+      <label class="check"><input type="checkbox" name="interests" value="Relief operations"> Relief operations</label>
+      <label class="check"><input type="checkbox" name="interests" value="Tutoring"> Tutoring</label>
+      <label class="check"><input type="checkbox" name="interests" value="Clean-up drives"> Clean-up drives</label>
+      <label class="check"><input type="checkbox" name="interests" value="Feeding programs"> Feeding programs</label>
+      <label class="check"><input type="checkbox" name="interests" value="Skills sharing"> Skills sharing</label>
+    </fieldset>
+    <label>Anything else? (optional) <textarea name="note" maxlength="300" rows="2" placeholder="Skills, languages, or how many people are coming"></textarea></label>
+    <p class="form-error" id="volunteer-error" role="alert"></p>
+    <p class="form-privacy">Only the site's admins can see what you send. We'll use it only to contact you about volunteering.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn ghost" id="signup-cancel">Cancel</button>
+      <button type="submit" class="btn">Send sign-up</button>
+    </div>
+  </form>
+  <p class="form-done" id="volunteer-done" role="status" hidden>Salamat! We got your sign-up and will contact you about the next activity.</p>
+</dialog>
 <footer>Abot-Mamamayan, a community hub for Baguio City. Hotlines last checked October 2026.</footer>
+<script src="volunteer.js?v=1" defer></script>
 <script type="module" src="admin.js?v=15"></script>
 </body>
 </html>

@@ -239,22 +239,27 @@ dialog[open]::backdrop { animation:fade .22s ease-out; }
 @keyframes saved { from { background:rgba(233,185,73,.45); } }
 [data-key].saved { animation:saved 1.2s ease-out; }
 
-/* volunteer sign-up form on volunteer.html */
-.page > .signup { max-width:none; margin-top:28px; padding:18px 20px 20px; border:1px solid var(--line); border-radius:14px;
-  background:linear-gradient(135deg, transparent 45%, color-mix(in srgb, var(--c, transparent) 12%, transparent)); scroll-margin-top:16px; }
-.signup h2 { margin:0 0 4px; }
-.signup > p { margin:0 0 4px; color:var(--muted); }
+/* volunteer sign-up: a button on volunteer.html that opens the form in a dialog */
+.page > .signup { margin-top:24px; padding:14px 16px; border:1px solid var(--line); border-radius:12px;
+  background:linear-gradient(135deg, transparent 45%, color-mix(in srgb, var(--c, transparent) 12%, transparent)); }
+.signup .btn { border:0; font:inherit; font-weight:600; cursor:pointer; }
+#signup-dialog { width:min(560px, calc(100% - 32px)); }
+.signup-intro { grid-column:1 / -1; margin:0 0 10px; color:var(--muted); }
+#volunteer-form h2 { grid-column:1 / -1; margin:0 0 2px; }
+#volunteer-form .dialog-actions { grid-column:1 / -1; }
+#volunteer-form .dialog-actions .btn { justify-self:auto; }
 #volunteer-form { display:grid; grid-template-columns:1fr; gap:4px 16px; margin-top:14px; animation:settle .3s ease-out; }
-@media (min-width:600px) { #volunteer-form { grid-template-columns:1fr 1fr; } }
+@media (min-width:520px) { #volunteer-form { grid-template-columns:1fr 1fr; } }
 #volunteer-form > label, #volunteer-form fieldset { font-weight:600; margin-bottom:10px; }
-#volunteer-form fieldset, #volunteer-form > label:has(textarea), #volunteer-form .form-error, #volunteer-form .form-privacy, #volunteer-form .btn { grid-column:1 / -1; }
+#volunteer-form fieldset label { margin:0; }
+#volunteer-form fieldset, #volunteer-form > label:has(textarea), #volunteer-form .form-error, #volunteer-form .form-privacy { grid-column:1 / -1; }
 #volunteer-form input:not([type=checkbox]), #volunteer-form select, #volunteer-form textarea { display:block; width:100%; margin-top:4px; padding:10px 12px;
   border:1px solid var(--line); border-radius:8px; font:inherit; font-weight:400; background:var(--field); color:var(--ink); }
 #volunteer-form fieldset { border:1px solid var(--line); border-radius:8px; padding:8px 12px 10px; display:flex; flex-wrap:wrap; gap:6px 18px; }
 #volunteer-form legend { padding:0 4px; }
 #volunteer-form .check { display:flex; align-items:center; gap:6px; font-weight:400; cursor:pointer; }
-#volunteer-form .check input { width:18px; height:18px; accent-color:var(--moss); }
+#volunteer-form .check input { display:inline-block; width:18px; height:18px; margin:0; padding:0; accent-color:var(--moss); }
 #volunteer-form input:focus-visible, #volunteer-form select:focus-visible, #volunteer-form textarea:focus-visible { outline:3px solid var(--sun); outline-offset:1px; }
-#volunteer-form .btn { justify-self:start; border:0; font:inherit; font-weight:600; cursor:pointer; margin:0; }
-.form-privacy { margin:4px 0 0; color:var(--muted); font-size:.85rem; }
+
+.form-privacy { margin:0 0 12px; color:var(--muted); font-size:.85rem; }
 .form-done { margin:14px 0 0; padding:12px 16px; border-radius:8px; background:var(--note); border-left:4px solid var(--moss); font-weight:600; }
